@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Товары</title>
+</head>
+    <body>
+    <h1>Последние 5 товаров</h1>
+        <table>
+
+            {% for obj in objects %}
+
+                <tr><td><h3>{{ obj.name }}</h3></td>
+                <td><p>Цена: {{ obj.price }}</p></td>
+                <td><p>--> {{ obj.category }}</p></td>
+                </tr>
+
+            {% endfor %}
+        </table>
+    </body>
+</html>

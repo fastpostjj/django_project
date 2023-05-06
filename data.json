@@ -1,0 +1,270 @@
+[
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2023-05-05T17:51:04.094Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "1",
+      "object_repr": "Молочные продукты Молочные продукты: молок, йогурты и др.",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+      "action_time": "2023-05-05T17:51:21.248Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "1",
+      "object_repr": "Молочные продукты Молочные продукты: молоко, йогурты и др.",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"\\u041e\\u043f\\u0438\\u0441\\u0430\\u043d\\u0438\\u0435\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+      "action_time": "2023-05-05T17:52:36.899Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "1",
+      "object_repr": "Молоко Очень вкусное молоко Молоко 2023-05-09 17:52:32+00:00 2023-05-05 17:52:31+00:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+      "action_time": "2023-05-05T17:58:02.091Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "2",
+      "object_repr": "Бакалея Крупы и проч.",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+      "action_time": "2023-05-05T20:55:46.748Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "1",
+      "object_repr": "Молочные продукты Все молочное",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+      "action_time": "2023-05-05T20:56:05.352Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "2",
+      "object_repr": "Бакалея Крупы и проч.",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+      "action_time": "2023-05-05T20:56:18.714Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "3",
+      "object_repr": "Вода Вода",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+      "action_time": "2023-05-05T21:01:36.697Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "1",
+      "object_repr": "Молоко Очень вкусное молоко Молочные продукты Все молочное 2023-05-09 21:01:32+00:00 2023-05-15 21:01:34+00:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+      "action_time": "2023-05-06T19:41:41.863Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "2",
+      "object_repr": "2 Бакалея, Крупы и проч.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+      "action_time": "2023-05-06T19:41:42.116Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "3",
+      "object_repr": "3 Вода, Вода",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+      "action_time": "2023-05-06T19:41:42.119Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "1",
+      "object_repr": "1 Молочные продукты, Все молочное",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+      "action_time": "2023-05-06T19:41:42.136Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "5",
+      "object_repr": "5 Мясо, Мясные продукты",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 13,
+    "fields": {
+      "action_time": "2023-05-06T19:41:42.139Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "4",
+      "object_repr": "4 Фрукты, Вкуснятина",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 14,
+    "fields": {
+      "action_time": "2023-05-06T19:42:03.494Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "5",
+      "object_repr": "5 Семена цветов, Семена декоративных цветов",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 15,
+    "fields": {
+      "action_time": "2023-05-06T19:44:24.478Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "2",
+      "object_repr": "2 Эустома Сапфир, смесь окрасок, Лизиантус или эустома — нежный и очень красивый цветок с листьями, которые, словно, покрыты воском, приятного сизого оттенка.\r\nСоцветия крупные, в виде воронки, просты",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 16,
+    "fields": {
+      "action_time": "2023-05-06T19:45:59.437Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "3",
+      "object_repr": "3 Годеция Красавица, махровая смесь 0,3 г, Данный сорт отличается разнообразной окраской пышных махровых бутонов, внешне они напоминают цветы азалии. Побеги у растения этого сорта прямостоячие и разве",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 17,
+    "fields": {
+      "action_time": "2023-05-06T19:47:21.674Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "4",
+      "object_repr": "4 Бархатцы Арлекин, семена, Бархатцы \"Арлекин\" ярко-желтое соцветие. Бархатцы выращивают на клумбе. Растение цветет с лета и до заморозков., 5 Семена цветов, Семена декоративных цветов, 29.0",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 18,
+    "fields": {
+      "action_time": "2023-05-06T19:48:36.067Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "5",
+      "object_repr": "5 Осока Мист Амазон, семена, Осока власовидная одна из самых первых попавших в европейские сады Новозеландских осок. Растения густодернистые, образует красивые куртины высотой 25-35см и диаметром до 1",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 19,
+    "fields": {
+      "action_time": "2023-05-06T19:49:23.362Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "6",
+      "object_repr": "6 Декоративные кустарники, Декоративные кустарники для вашего сада",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 20,
+    "fields": {
+      "action_time": "2023-05-06T19:50:22.025Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "6",
+      "object_repr": "6 Азалия Гейша Оранж, Азалия Гейша Оранж (японская) - компактный кустарник с плотной кроной подушковидной формы. Во время цветения растение усыпано колокольчатыми оранжевыми цветками со светло-красным",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 21,
+    "fields": {
+      "action_time": "2023-05-06T19:52:13.692Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "7",
+      "object_repr":
