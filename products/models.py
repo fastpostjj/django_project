@@ -11,6 +11,7 @@ class Category(models.Model):
     """
     name = models.CharField(max_length=150, verbose_name='Наименование')
     description = models.TextField(verbose_name='Описание', **NULLABLE)
+    # created_at = models.DateTimeField(verbose_name='Дата создания', **NULLABLE)
 
     def __str__(self):
         return f'{self.id} {self.name}'
@@ -46,5 +47,16 @@ class Products(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
         ordering = ('name', 'price')
+
+
+"""
+- Создать новое приложение “собаки”
+- Описать модель “Собака” с полями: кличка собаки, порода, фотография, дата рождения
+- Добавить модель “Порода” с полями: название, описание
+- В модели “Собака” заменить поле “порода” на ссылку на модель “Порода”
+- В админку вывести список пород, а также список собак
+- У списка собак добавить фильтрацию по породам
+"""
+
 
 

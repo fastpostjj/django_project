@@ -20,5 +20,6 @@ class ProductsAdmin(admin.ModelAdmin):
      поиск по названию и полю описания.
     """
     list_display = ('id', 'name', 'price','category')
+    list_display_links = ('id', 'name')
     list_filter = ('category',)
     search_fields = ('name', 'description',)
