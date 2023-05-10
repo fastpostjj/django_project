@@ -1,12 +1,6 @@
 {% extends 'products/base.html' %}
 {% load functions %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-</head>
-    <body>
     {% block content %}
 
         <h1>{{ text }}</h1>
@@ -26,7 +20,7 @@
                     <td><h3>{{ obj.name }}</h3></td>
                     <td><p>{{ obj.price }}</p></td>
                     <td><p>{{ obj.category }}</p></td>
-                    <td><p> {{ obj.description|reverse }}</p></td>
+                    <td><p> {{ obj.description|cut_first }}</p></td>
                     <td><p>Дата создания: {{ obj.created_data|date:'Y:m:d' }}</p></td>
                     <td><p>Дата последнего изменения: {{ obj.last_changed_data|date:'Y:m:d' }}</p></td>
                 </tr>
@@ -34,6 +28,3 @@
             {% endfor %}
         </table>
     {% endblock content %}
-
-    </body>
-</html>

@@ -4,13 +4,10 @@ import datetime
 register = template.Library()
 
 # Шаблонный фильтр
-@register.filter
-def first_text(value):
-    return value[:100]
 
-@register.filter(name='reverse')
-def reverse_text(value):
-    return value[:min(len(value), 100)]
+@register.filter(name='cut_first')
+def cut_text(value):
+    return value[:min(len(value), 100)] + '...'
 
 
 # Шаблонный тэг
