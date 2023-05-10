@@ -1,0 +1,30 @@
+{% extends 'products/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+    <body>
+        {% block content %}
+            <h1>{{ text }}</h1>
+            <table>
+
+                    <tr><td><h3>{{ object.name }}</h3></td></tr>
+                    <tr><td><p>
+                        {% if  object.image %}
+                            <img src={{ object.image.url }} alt={{ object.name }}>
+                        {% endif %}
+                         </p></td></tr>
+                    <tr><td><p>Цена: {{ object.price }}</p></td></tr>
+                    <tr><td><p> {{ object.category }}</p></td></tr>
+                <tr><td><p><h2> {{ object.description  }}</h2></p></td></tr>
+                    <tr><td><p>Дата создания: {{ object.created_data|date:'Y:m:d' }}</p></td></tr>
+                    <tr><td><p>Дата последнего изменения: {{ object.last_changed_data|date:'Y:m:d' }}</p></td>
+
+                    </tr>
+            </table>
+        {% endblock content %}
+
+
+    </body>
+</html>

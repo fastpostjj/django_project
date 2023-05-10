@@ -8,7 +8,7 @@ class Command(BaseCommand):
         """
         Если текст содержит символ '\u2212' - заменить его на '-'.
         Двойную кавычку заменяем на двойную одинарную.
-        Другие типы данных игнорируем.
+        Другие типы данных,кроме str, игнорируем.
 
         """
         # print(ord('\u2212'))
@@ -38,7 +38,6 @@ class Command(BaseCommand):
                     new_dict[key] = self.check_text(value)
             text = text[:-2] + "\n},\n"
         text = text[:-2] + "\n]\n"
-        # print("text=", text)
 
         with open('save_category.json', 'w', encoding="utf-8") as file:
-             file.write(text)  # сохранение данных файл
+             file.write(text)

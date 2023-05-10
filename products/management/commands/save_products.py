@@ -19,7 +19,7 @@ class Command(BaseCommand):
             if data.find('\u2212') != -1:
                 print("В тексте", data)
                 print('сделана замена символа ','\u2212', 'в позиции:', data.find('\u2212'))
-                data = data.replace('\u2212', '-')
+                data = data.replace('\u2212', '...')
 
         return data
 
@@ -39,5 +39,5 @@ class Command(BaseCommand):
         text = text[:-2] + "\n]\n"
 
         with open('save_data.json', 'w', encoding="utf-8") as file:
-             file.write(text)  # сохранение данных файл
+             file.write(text)
 
