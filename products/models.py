@@ -14,7 +14,7 @@ class Category(models.Model):
     # created_at = models.DateTimeField(verbose_name='Дата создания', **NULLABLE)
 
     def __str__(self):
-        return f'{self.id} {self.name}'
+        return f'{self.name}'
 
     class Meta:
         verbose_name = 'Категория'
@@ -33,7 +33,7 @@ class Products(models.Model):
     """
     name = models.CharField(max_length=150, verbose_name='Название')
     description = models.TextField(verbose_name='Описание', **NULLABLE)
-    image = models.ImageField(verbose_name='Превью', **NULLABLE)
+    image = models.ImageField(verbose_name='Превью', upload_to='products/', **NULLABLE)
     # category = models.CharField(max_length=150, verbose_name='Категория')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     price = models.FloatField(verbose_name='Цена', **NULLABLE)

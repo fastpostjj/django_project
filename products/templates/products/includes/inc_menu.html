@@ -4,19 +4,19 @@
                <h3>Меню</h3>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Главная</a>
+                        <a class="nav-link" href={% url "products:products" %}>Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about/">О нас</a>
+                        <a class="nav-link" href={% url "products:about" %}>О нас</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/contact/">Контакты</a>
+                        <a class="nav-link" href={% url "products:gallery" %}>Галерея</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/gallery/">Галерея</a>
+                        <a class="nav-link" href={% url "products:index" %}>Последние 5 товаров</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/index/">Последние 5 товаров</a>
+                        <a class="nav-link" href={% url "products:contact" %}>Контакты</a>
                     </li>
     </div>
 {% endblock mainmenu %}

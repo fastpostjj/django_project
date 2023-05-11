@@ -1,4 +1,5 @@
 {% extends 'products/base.html' %}
+{% load functions %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,10 +14,12 @@
         <table>
 
             {% for obj in objects %}
+                <tr>
+                    <td>
 
-                <tr><td><h3>{{ obj.name }}</h3></td>
-                <td><p>Цена: {{ obj.price }}</p></td>
-                <td><p>--> {{ obj.category }}</p></td>
+                     <p><h3>{% get_data obj %}</h3></p>
+
+                    </td>
                 </tr>
 
             {% endfor %}

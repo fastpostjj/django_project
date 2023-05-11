@@ -16,6 +16,9 @@
 В проекте реализованы следущие url:
 *   /
   * index/
+  * contact/
+  * gallery/
+  * about/
 
 Реализованы команды:
 *   save_category - сохранение данных из таблицы категории в файл save_category.json
