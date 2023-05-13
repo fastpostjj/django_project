@@ -1,0 +1,42 @@
+{% extends 'products/base.html' %}
+{% load functions %}
+
+{% block content %}
+
+<h1>{{ text }}</h1>
+<diov class="col-12">
+    <a href="{% url 'products:product_create' %}" class ='btn btn-primary' m-2>Создать товар &raquo;</a>
+</diov>
+<diov class="col-12">
+    <a href="{% url 'products:category_create' %}" class ='btn btn-primary' m-2>Создать категорию &raquo;</a>
+</diov>
+      <div class="container">
+         <div class="row">
+    {% for object in object_list %}
+    <div class="col-sm-4">
+      <div class="card">
+            <div class="card-header">
+                {% if  object.image %}
+                <img src={{ object.image.url }} alt={{ object.name }} class="img-fluid rounded-start" width="100" height="100">
+                {% endif %}
+            </div>
+
+              <div class="card-body">
+                <h3 class="card-title">{{ object.name }}</h3>
+                    <h3 class="card-text">{{ object.category }}</h3>
+                    <p class="card-text">{{ object.description|cut_first }}</p>
+                    <p class="card-text">{% get_ruble object.price %}</p>
+                    <p class="card-text">Дата создания: {{ object.created_data|date:'d:m:Y' }}</p>
+                    <p class="card-text">Дата последнего изменения: {{ object.last_changed_data|date:'d:m:Y' }}</p>
+                    <a class="btn btn-secondary" href={% url 'products:product' object.pk %}>Перейти &raquo;</a>
+                  <!-- <a class="btn btn-secondary" href={% url 'products:product' object.pk %} role="button >Перейти</a>
+                    role="button ломает разметку-->
+                    <a class="btn btn-warning" href={% url 'products:product_update' object.pk %}>Изменить &raquo;</a>
+                    <a class="btn btn-danger" href={% url 'products:product_delete' object.pk %}>Удалить &raquo;</a>
+              </div>
+            </div>
+      </div>
+{% endfor %}
+    </div>
+        </div>
+{% endblock content %}

@@ -1,22 +1,29 @@
 {% block mainmenu %}
-    <div class="row">
-          <div class="col-md-4">
-               <h3>Меню</h3>
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href={% url "products:products" %}>Главная</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href={% url "products:products" %}>Главная</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href={% url "products:about" %}>О нас</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href={% url "products:gallery" %}>Галерея</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href={% url "products:index" %}>Последние 5 товаров</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href={% url "products:contact" %}>Контакты</a>
-                    </li>
-    </div>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href={% url "products:about" %}>О нас <span class="sr-only">(about)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href={% url "products:gallery" %}>Галерея</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href={% url "products:index" %}>Последние 5 товаров</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href={% url "products:contact" %}>Контакты</a>
+      </li>
+    </ul>
+
+  </div>
+</nav>
+
 {% endblock mainmenu %}

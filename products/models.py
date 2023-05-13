@@ -11,6 +11,7 @@ class Category(models.Model):
     """
     name = models.CharField(max_length=150, verbose_name='Наименование')
     description = models.TextField(verbose_name='Описание', **NULLABLE)
+    is_active = models.BooleanField(default=True, verbose_name='активный')
     # created_at = models.DateTimeField(verbose_name='Дата создания', **NULLABLE)
 
     def __str__(self):
@@ -39,9 +40,15 @@ class Products(models.Model):
     price = models.FloatField(verbose_name='Цена', **NULLABLE)
     created_data = models.DateTimeField(verbose_name='Дата создания')
     last_changed_data = models.DateTimeField(verbose_name='Дата последнего изменения')
+    is_active = models.BooleanField(default=True, verbose_name='активный')
 
     def __str__(self):
-        return f'{self.id} {self.name}, {self.category}, {self.price}'
+        # return f'{self.id} {self.name}, {self.category}, {self.price}'
+        return f'{self.name}'
+
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.save()
 
     class Meta:
         verbose_name = 'Товар'

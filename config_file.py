@@ -21,6 +21,7 @@ def get_database_params(filename="database.ini", section="postgresql"):
     return db
 
 databasename='products'
+email='fastpost@yandex.ru'
 
 
 

@@ -15,3 +15,6 @@ def cut_text(value):
 def get_data(obj):
     return f"{obj.name} Цена: {obj.price} {obj.category}"
 
+@register.simple_tag()
+def get_ruble(value):
+    return str(value) + ' руб.'
