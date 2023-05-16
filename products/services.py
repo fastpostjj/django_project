@@ -7,6 +7,6 @@ def send_deactivate_email(user):
         'Товар деактивирован',
         'Товар деактивирован. Обратитесь к администратору.',
         settings.EMAIL_HOST_USER,
-        recipient_list=[user.email]
+        recipient_list=[user.name]
 
     )

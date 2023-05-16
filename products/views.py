@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
-from django.views import generic
+from django.views import generic, View
 from products.models import Category, Products
 import random
 
@@ -10,44 +10,20 @@ from products.services import send_deactivate_email
 
 # Create your views here.
 
-# def products(request):
-#     title = 'Наши товары'
-#     text = "Интернет-магазин саженцев и семян"
-#     objects = Products.objects.all().order_by('-id')
-#
-#     return render(request, 'products/products_list.html', {
-#         'title': title, 'text': text, 'objects': objects, })
+class GetContact(View):
+    def get(self, request):
+        title = 'Контакты'
+        text = 'Посетить нас:'
+        return render(request, 'products/contact.html', {'title': title, 'text': text})
 
 
-def index(request):
-    number = 5
-    object_list = Products.objects.all().order_by('-id')[:number]
-    title = 'Последние 5 товаров'
-    text = 'Последние 5 товаров'
-    return render(request, 'products/products_list.html', {
-        'title': title,
-        'text': text,
-        'object_list': object_list,
-    })
-
-
-def contact(request):
-    title = 'Контакты'
-    text = 'Посетить нас:'
-    return render(request, 'products/contact.html', {'title': title, 'text': text})
-
-
-def gallery(request):
-    title = 'Галерея'
-    text = 'Галерея'
-    objects = Products.objects.all().order_by('-id')
-    random_object = random.choice(objects)
-    return render(request, 'products/products_detail.html', {'title': title, 'text': text, 'object': random_object, })
+#     title = 'Контакты'
+#     text = 'Посетить нас:'
+#     return render(request, 'products/contact.html', {'title': title, 'text': text})
 
 
 class ProductDetailView(generic.DetailView):
     model = Products
-
     def get_context_data(self, **kwargs):
         contex_data = super().get_context_data(**kwargs)
         # contex_data['title'] = contex_data['object']
@@ -81,25 +57,141 @@ class ProductsDeleteView(generic.DeleteView):
     model = Products
     success_url = reverse_lazy('products:products')
 
-def toggle_activity(request, pk):
+def toggle_activity_product(request, pk):
     products = get_object_or_404(Products, pk=pk)
     if products.is_active:
         products.is_active = False
-        send_deactivate_email(products)
     else:
         products.is_active = True
     products.save()
     return redirect(reverse('products:product', args=[products.pk]))
+
+def toggle_activity_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    if category.is_active:
+        category.is_active = False
+    else:
+        category.is_active = True
+    category.save()
+    return redirect(reverse('products:category', args=[category.pk]))
+
+
+
+class CategoryDetailView(generic.DetailView):
+    model = Category
+    fields = ('name', 'description')
+    def get_context_data(self, **kwargs):
+        contex_data = super().get_context_data(**kwargs)
+        contex_data['title'] = self.get_object()
+        contex_data['text'] = self.get_object()
+        return contex_data
+
+class CategoryUpdateView(generic.UpdateView):
+    model = Category
+    fields = ('name', 'description')
+    success_url = reverse_lazy('products:categories')
+    # def get_context_data(self, **kwargs):
+    #     contex_data = super().get_context_data(**kwargs)
+    #     contex_data['title'] = "Изменение категории" + str(self.get_object())
+    #     contex_data['text'] = "Изменение категории" + str(self.get_object())
+    #     return contex_data
+
 class CategoryCreateView(generic.CreateView):
     model = Category
     fields = ('name', 'description')
+    success_url = reverse_lazy('products:categories')
+
+    # def get_context_data(self, **kwargs):
+    #         # contex_data = super().get_context_data(**kwargs)
+    #         # contex_data['title'] = "Создание категории" + str(self.get_object())
+    #         # contex_data['text'] = "Создание категории" + str(self.get_object())
+    #     contex_data ={}
+    #     contex_data['title'] = "Создание категории"
+    #     contex_data['text'] = "Создание категории"
+    #     return contex_data
+
+class CategoriesListView(generic.ListView):
+    model = Category
+    extra_context = {
+        'title': 'Категории',
+        'text': 'Категории'
+    }
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # queryset = queryset.filter(is_active=True)
+        return queryset
+
+class CategoryDeleteView(generic.DeleteView):
+    model = Category
+    success_url = reverse_lazy('products:products')
+
+class GetAbout(View):
+    def get(self, request):
+        title = 'О нас'
+        text = 'Интернет-магазин цветов и саженцев'
+        return render(request, 'products/about.html', {'title': title, 'text': text})
+
+class GetIndex(View):
+    def get(self, request):
+        number = 5
+        object_list = Products.objects.all().order_by('-id')[:number]
+        title = 'Последние 5 товаров'
+        text = 'Последние 5 товаров'
+        return render(request, 'products/products_list.html', {
+            'title': title,
+            'text': text,
+            'object_list': object_list,
+        })
+
+class GetGallery(View):
+    def get(self, request):
+        title = 'Галерея'
+        text = 'Галерея'
+        objects = Products.objects.all().order_by('-id')
+        random_object = random.choice(objects)
+        return render(request, 'products/products_detail.html',
+                      {'title': title, 'text': text, 'object': random_object, })
+
+
+# def contact(request):
+#     title = 'Контакты'
+#     text = 'Посетить нас:'
+#     return render(request, 'products/contact.html', {'title': title, 'text': text})
 
 # def product(request, pk):
 #     title = 'Товар'
 #     text = 'Товар'
 #     object = Products.objects.get(pk=pk)
 #     return render(request, 'products/products_detail.html', {'title': title , 'text': text, 'object': object,})
-def about(request):
-    title = 'О нас'
-    text = 'Интернет-магазин цветов и саженцев'
-    return render(request, 'products/about.html', {'title': title, 'text': text})
+
+# def about(request):
+#     title = 'О нас'
+#     text = 'Интернет-магазин цветов и саженцев'
+#     return render(request, 'products/about.html', {'title': title, 'text': text})
+
+# def products(request):
+#     title = 'Наши товары'
+#     text = "Интернет-магазин саженцев и семян"
+#     objects = Products.objects.all().order_by('-id')
+#
+#     return render(request, 'products/products_list.html', {
+#         'title': title, 'text': text, 'objects': objects, })
+
+# def gallery(request):
+#     title = 'Галерея'
+#     text = 'Галерея'
+#     objects = Products.objects.all().order_by('-id')
+#     random_object = random.choice(objects)
+#     return render(request, 'products/products_detail.html', {'title': title, 'text': text, 'object': random_object, })
+
+# def index(request):
+#     number = 5
+#     object_list = Products.objects.all().order_by('-id')[:number]
+#     title = 'Последние 5 товаров'
+#     text = 'Последние 5 товаров'
+#     return render(request, 'products/products_list.html', {
+#         'title': title,
+#         'text': text,
+#         'object_list': object_list,
+#     })

@@ -8,7 +8,7 @@
     <a href="{% url 'products:product_create' %}" class ='btn btn-primary' m-2>Создать товар &raquo;</a>
 </diov>
 <diov class="col-12">
-    <a href="{% url 'products:category_create' %}" class ='btn btn-primary' m-2>Создать категорию &raquo;</a>
+    <a href="{% url 'products:categories' %}" class ='btn btn-primary' m-2>Все категории &raquo;</a>
 </diov>
       <div class="container">
          <div class="row">
@@ -23,7 +23,9 @@
 
               <div class="card-body">
                 <h3 class="card-title">{{ object.name }}</h3>
-                    <h3 class="card-text">{{ object.category }}</h3>
+                    <h3 class="card-text" href={% url 'products:category' object.category.pk %}>{{ object.category }} </h3>
+                    <!-- <a class="btn btn-warning" href={% url 'products:category_update' object.category.pk %}>Изменить &raquo;</a> -->
+
                     <p class="card-text">{{ object.description|cut_first }}</p>
                     <p class="card-text">{% get_ruble object.price %}</p>
                     <p class="card-text">Дата создания: {{ object.created_data|date:'d:m:Y' }}</p>

@@ -132,9 +132,11 @@ MEDIA_ROOT = BASE_DIR / 'media/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-EMAIL_HOST = 'smtp.yandex.com'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = email
-EMAIL_HOST_PASSWORD = params['email_password']
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
+
+# для отправки письма
+# EMAIL_HOST = 'smtp.yandex.com'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = email
+# EMAIL_HOST_PASSWORD = params['email_password']
+# EMAIL_USE_TLS = False
+# EMAIL_USE_SSL = True

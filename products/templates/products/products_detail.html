@@ -18,7 +18,7 @@
                 <div class="card-footer">
                     <a href="{% url 'products:products' %}" class="btn btn-primary">Главная &raquo;</a>
                     <!-- <a href="{% url 'products:products' %}" class="btn btn-warning float-rigth">Деактивировать</a> -->
-                    <a href="{% url 'products:toggle_activity' object.pk %}" class="btn btn-warning float-rigth">{% if object.is_active %}Деактивировать{% else %}Активировать{% endif %} &raquo;</a>
+                    <a href="{% url 'products:toggle_activity_product' object.pk %}" class="btn btn-warning float-rigth">{% if object.is_active %}Деактивировать{% else %}Активировать{% endif %} &raquo;</a>
                 </div>
           </div>
     </div>

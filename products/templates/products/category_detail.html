@@ -1,0 +1,21 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<h3>{{  text }}</h3>
+    <div class="card" style="width: 24rem;">
+          <div class="card-body">
+                <h5 class="card-title">{{ object.name }}</h5>
+                <p class="card-text">{{ object.description  }}</p>
+                <div class="card-footer">
+
+                    <diov class="col-12">
+                        <a href="{% url 'products:category_create' %}" class ='btn btn-primary' m-2>Создать категорию &raquo;</a>
+                    </diov>
+                    <a href="{% url 'products:toggle_activity_category' object.pk %}" class="btn btn-warning float-rigth">
+                            {% if object.is_active %}Деактивировать
+                            {% else %}Активировать
+                            {% endif %} &raquo;</a>
+                </div>
+                    <a href="{% url 'products:products' %}" class="btn btn-primary">Главная &raquo;</a>
+          </div>
+    </div>
+{% endblock content %}

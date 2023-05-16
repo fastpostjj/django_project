@@ -1,0 +1,31 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<h1>{{ text }}</h1>
+<diov class="col-12">
+    <a href="{% url 'products:product_create' %}" class ='btn btn-primary' m-2>Создать товар &raquo;</a>
+</diov>
+<diov class="col-12">
+    <a href="{% url 'products:category_create' %}" class ='btn btn-primary' m-2>Создать категорию &raquo;</a>
+</diov>
+      <div class="container">
+         <div class="row">
+    {% for object in object_list %}
+    <div class="col-sm-4">
+      <div class="card">
+               <div class="card-body">
+                <h3 class="card-title">{{ object.name }}</h3>
+                    <h3 class="card-text" href={% url 'products:category' object.pk %}>{{ object.category }} </h3>
+                   <!-- <a class="btn btn-warning" href={% url 'products:category_update' object.pk %}>Изменить &raquo;</a> -->
+
+                    <p class="card-text">{{ object.description }}</p>
+                    <a class="btn btn-secondary" href={% url 'products:category' object.pk %}>Перейти &raquo;</a>
+
+                    <a class="btn btn-warning" href={% url 'products:category_update' object.pk %}>Изменить &raquo;</a>
+                    <a class="btn btn-danger" href={% url 'products:category_delete' object.pk %}>Удалить &raquo;</a>
+              </div>
+            </div>
+      </div>
+{% endfor %}
+    </div>
+        </div>
+{% endblock content %}
