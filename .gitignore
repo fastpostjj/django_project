@@ -2,6 +2,7 @@ Tasks/
 venv/
 
 database.ini
+email.ini
 
 __pycache__/
 

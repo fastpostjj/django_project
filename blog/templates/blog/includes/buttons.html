@@ -1,0 +1,5 @@
+{% block buttons %}
+                   <a class="btn btn-warning" href={% url 'blog:blog_update' object.slug %}>Изменить &raquo;</a>
+                   <a href="{% url 'blog:toggle_activity_blog' object.slug %}" class="btn btn-warning float-rigth">{% if object.is_active %}Деактивировать{% else %}Активировать{% endif %} &raquo;</a>
+                   <a class="btn btn-danger" href={% url 'blog:blog_delete' object.slug %}>Удалить &raquo;</a>
+{% endblock buttons %}

@@ -1,0 +1,31 @@
+
+{% block content %}
+
+<div class="card">
+  <div class="row no-gutters">
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ object.title }}</h5>
+        <a href="{% url 'blog:blog' object.slug %}" >{{ object.slug }}</a>
+        <div class="mb-1 text-muted">{{ object.created_at|date:'d:m:Y' }} г.</div>
+        <div class="mb-2 text-muted">Просмотров: {{  object.count_view }}</div>
+        <p class="card-text mb-auto">{{ object.description }}</p>
+        <a class="btn btn-secondary" href={% url 'blog:blog' object.slug %}>Перейти &raquo;</a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <img
+          {% if  object.preview %}
+          src={{ object.preview.url }}  class="card-img" alt={{ object.title }}
+         {% else %}
+         scr='' alt={{ object.name }}
+      {% endif %}>
+    </div>
+             <div class="card-footer">
+
+             </div>
+  </div>
+</div>
+
+
+{% endblock content %}

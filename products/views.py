@@ -1,11 +1,8 @@
-from django.http import HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic, View
 from products.models import Category, Products
 import random
-
-from products.services import send_deactivate_email
 
 
 # Create your views here.
@@ -15,11 +12,6 @@ class GetContact(View):
         title = 'Контакты'
         text = 'Посетить нас:'
         return render(request, 'products/contact.html', {'title': title, 'text': text})
-
-
-#     title = 'Контакты'
-#     text = 'Посетить нас:'
-#     return render(request, 'products/contact.html', {'title': title, 'text': text})
 
 
 class ProductDetailView(generic.DetailView):
