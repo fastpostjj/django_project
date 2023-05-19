@@ -48,7 +48,7 @@ class BlogListView(generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(is_active=True).order_by("-created_at", "title")
+        queryset = queryset.filter(is_active=True, is_published=True).order_by("-created_at", "title")
         return queryset
 
 class BlogDraftListView(generic.ListView):
@@ -60,7 +60,7 @@ class BlogDraftListView(generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(is_active=False).order_by("-created_at", "title")
+        queryset = queryset.filter(is_active=True, is_published=False).order_by("-created_at", "title")
         return queryset
 
 
