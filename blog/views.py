@@ -18,15 +18,18 @@ class BlogDetailView(generic.DetailView):
         contex_data['text'] = self.get_object()
         return contex_data
 
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset=queryset)
-        obj.count_view += 1
-        obj.save()
-        if obj.count_view == 100:
+    # def get_object(self, queryset=None):
+    def get(self, request, *args, **kwargs):
+        self.object = super().get_object()
+        self.object.count_view += 1
+        print("Увеличение счетчика")
+        self.object.save()
+        context = self.get_context_data(object=self.object)
+        if self.object.count_view == 100:
 
             # Посылаем email, когда счетчик достигнет 100
-            subject = f"Вашу статью прочитали {obj.count_view} раз!"
-            message_body = f"Количество просмотров статьи {obj.title} достигло {obj.count_view}"
+            subject = f"Вашу статью прочитали {self.object.count_view} раз!"
+            message_body = f"Количество просмотров статьи {self.object.title} достигло {self.object.count_view}"
             send_mail(
             subject,
             message_body,
@@ -34,7 +37,7 @@ class BlogDetailView(generic.DetailView):
             [EMAIL_HOST_USER],
             fail_silently=False,
             )
-        return obj
+        return self.render_to_response(context)
 
 class BlogListView(generic.ListView):
     model = Blog
