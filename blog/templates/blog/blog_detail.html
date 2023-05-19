@@ -3,12 +3,3 @@
     {% include 'blog/includes/blog.html' %}
     {% include 'blog/includes/buttons.html' %}
 {% endblock content %}
-
-
-    slug = models.CharField(max_length=150, verbose_name='URL')
-    description = models.TextField(verbose_name='Описание', **NULLABLE)
-    preview = models.ImageField(verbose_name='Превью', upload_to='blog/', **NULLABLE)
-    is_active = models.BooleanField(default=True, verbose_name='Активная')
-    created_at = models.DateField(verbose_name='Дата создания', auto_now_add=True)
-    is_published = models.BooleanField(verbose_name='Опубликована')
-    count_view = models.IntegerField(verbose_name='Количество просмотров', **NULLABLE)

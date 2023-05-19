@@ -1,5 +1,12 @@
 {% extends 'products/base.html' %}
+{% load functions %}
 {% block content %}
+<diov class="col-12">
+    <a href="{% url 'blog:blogs' %}" class ='btn btn-primary' m-2>Все статьи &raquo;</a>
+    <a href="{% url 'blog:blog_drafts' %}" class ='btn btn-primary' m-2>Черновики статей &raquo;</a>
+</diov>
+    <br>
+    <br>
 <diov class="col-12">
     <a href="{% url 'blog:blog_create' %}" class ='btn btn-primary' m-2>Добавить статью &raquo;</a>
 </diov>
@@ -7,5 +14,6 @@
     <div class="row">
      {% include 'blog/includes/blog.html' %}
     </div>
+    <a class="btn btn-secondary" href={% url 'blog:blog' object.slug %}>Перейти &raquo;</a>
 {% endfor %}
 {% endblock content %}

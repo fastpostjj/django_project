@@ -10,7 +10,7 @@
         <div class="mb-1 text-muted">{{ object.created_at|date:'d:m:Y' }} г.</div>
         <div class="mb-2 text-muted">Просмотров: {{  object.count_view }}</div>
         <p class="card-text mb-auto">{{ object.description }}</p>
-        <a class="btn btn-secondary" href={% url 'blog:blog' object.slug %}>Перейти &raquo;</a>
+
       </div>
     </div>
     <div class="col-md-4">

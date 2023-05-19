@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy, reverse
 from django.views import generic, View
 
@@ -17,6 +18,24 @@ class BlogDetailView(generic.DetailView):
         contex_data['text'] = self.get_object()
         return contex_data
 
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
+        obj.count_view += 1
+        obj.save()
+        if obj.count_view == 100:
+
+            # Посылаем email, когда счетчик достигнет 100
+            subject = f"Вашу статью прочитали {obj.count_view} раз!"
+            message_body = f"Количество просмотров статьи {obj.title} достигло {obj.count_view}"
+            send_mail(
+            subject,
+            message_body,
+            EMAIL_HOST_USER,
+            [EMAIL_HOST_USER],
+            fail_silently=False,
+            )
+        return obj
+
 class BlogListView(generic.ListView):
     model = Blog
     extra_context = {
@@ -26,24 +45,34 @@ class BlogListView(generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(is_published=True)
+        queryset = queryset.filter(is_active=True).order_by("-created_at", "title")
+        return queryset
 
-        print(queryset)
-        # queryset = sorted(queryset, key=lambda x: x.created_at, reverse=True)
-        # print(queryset)
+class BlogDraftListView(generic.ListView):
+    model = Blog
+    extra_context = {
+        'title': 'Черновики статей',
+        'text': "Черновики статей"
+    }
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=False).order_by("-created_at", "title")
         return queryset
 
 
 class BlogCreateView(generic.CreateView):
     model = Blog
-    fields = ('title', 'slug', 'description', 'preview', 'is_active', 'is_published', 'count_view')
+    fields = ('title', 'description', 'preview', 'is_active', 'is_published')
     success_url = reverse_lazy('blog:blogs')
 
 
 class BlogUpdateView(generic.UpdateView):
     model = Blog
-    fields = ('title', 'slug', 'description', 'preview', 'is_active', 'is_published', 'count_view')
-    success_url = reverse_lazy('blog:blogs')
+    fields = ('title', 'description', 'preview', 'is_active', 'is_published')
+    # success_url = reverse_lazy('blog:blogs')
+    def get_success_url(self):
+        return reverse('blog:blog', args=[self.object.slug])
 
 
 class BlogDeleteView(generic.DeleteView):

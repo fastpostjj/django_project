@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy, reverse
 from django.views import generic, View
 from products.models import Category, Products
@@ -39,6 +40,13 @@ class ProductsCreateView(generic.CreateView):
     model = Products
     fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
     success_url = reverse_lazy('products:products')
+    # q = model.CharField(max_length=30)
+    # s = model.SlugField()
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Newly created object, so set slug
+            self.slug = slugify(self.title)
+        super(ProductsCreateView, self).save(*args, **kwargs)
 
 class ProductsUpdateView(generic.UpdateView):
     model = Products
@@ -93,14 +101,6 @@ class CategoryCreateView(generic.CreateView):
     fields = ('name', 'description')
     success_url = reverse_lazy('products:categories')
 
-    # def get_context_data(self, **kwargs):
-    #         # contex_data = super().get_context_data(**kwargs)
-    #         # contex_data['title'] = "Создание категории" + str(self.get_object())
-    #         # contex_data['text'] = "Создание категории" + str(self.get_object())
-    #     contex_data ={}
-    #     contex_data['title'] = "Создание категории"
-    #     contex_data['text'] = "Создание категории"
-    #     return contex_data
 
 class CategoriesListView(generic.ListView):
     model = Category
