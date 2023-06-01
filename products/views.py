@@ -2,6 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy, reverse
 from django.views import generic, View
+from django import forms
+
+from products.forms import VersionForm, ProductsForm, CategoryForm
 from products.models import Category, Products, Version
 import random
 
@@ -59,12 +62,16 @@ class VersionDetailView(generic.DetailView):
 
 class VersionCreateView(generic.CreateView):
     model = Version
-    fields = ('product', 'version_number', 'version_title', 'is_active')
+    form_class = VersionForm
+    # fields = ('product', 'version_number', 'version_title', 'is_active')
     success_url = reverse_lazy('products:versions')
+
+
 
 class VersionUpdateView(generic.UpdateView):
     model = Version
-    fields = ('product', 'version_number', 'version_title', 'is_active')
+    form_class = VersionForm
+    # fields = ('product', 'version_number', 'version_title', 'is_active')
     success_url = reverse_lazy('products:versions')
 
 class VersionDeleteView(generic.DeleteView):
@@ -106,19 +113,21 @@ class ProductsListView(generic.ListView):
 
 class ProductsCreateView(generic.CreateView):
     model = Products
-    fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
+    form_class = ProductsForm
+    # fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
     success_url = reverse_lazy('products:products')
-    # q = model.CharField(max_length=30)
-    # s = model.SlugField()
+
     def save(self, *args, **kwargs):
         if not self.id:
             # Newly created object, so set slug
             self.slug = slugify(self.title)
         super(ProductsCreateView, self).save(*args, **kwargs)
 
+
 class ProductsUpdateView(generic.UpdateView):
     model = Products
-    fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
+    form_class = ProductsForm
+    # fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
     success_url = reverse_lazy('products:products')
 
 class ProductsDeleteView(generic.DeleteView):
@@ -147,7 +156,7 @@ def toggle_activity_category(request, pk):
 
 class CategoryDetailView(generic.DetailView):
     model = Category
-    fields = ('name', 'description')
+    # fields = ('name', 'description')
     def get_context_data(self, **kwargs):
         contex_data = super().get_context_data(**kwargs)
         contex_data['title'] = self.get_object()
@@ -156,7 +165,8 @@ class CategoryDetailView(generic.DetailView):
 
 class CategoryUpdateView(generic.UpdateView):
     model = Category
-    fields = ('name', 'description')
+    form_class = CategoryForm
+    # fields = ('name', 'description')
     success_url = reverse_lazy('products:categories')
     # def get_context_data(self, **kwargs):
     #     contex_data = super().get_context_data(**kwargs)
@@ -166,7 +176,8 @@ class CategoryUpdateView(generic.UpdateView):
 
 class CategoryCreateView(generic.CreateView):
     model = Category
-    fields = ('name', 'description')
+    form_class = CategoryForm
+    # fields = ('name', 'description')
     success_url = reverse_lazy('products:categories')
 
 
