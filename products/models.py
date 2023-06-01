@@ -55,6 +55,38 @@ class Products(models.Model):
         verbose_name_plural = 'Товары'
         ordering = ('name', 'price')
 
+class Version(models.Model):
+    """
+    модель «Версия» содержит следующие поля:
+
+    продукт,
+    номер версии,
+    название версии,
+    признак текущей версии.
+    При наличии активной версии реализовать вывод в список продуктов информации об активной версии.
+    product
+    version_number
+    version_title
+    is_active
+
+    """
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name="Название продукта")
+    version_number = models.IntegerField(verbose_name="Номер версии", **NULLABLE)
+    version_title = models.CharField(max_length=150, verbose_name="Наименование версии", **NULLABLE)
+    is_active = models.BooleanField(default=True, verbose_name='активный')
+
+    def __str__(self):
+        return f"Версия № {self.version_number}, {self.version_title}"
+
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.save()
+
+    class Meta:
+        verbose_name = 'Версия'
+        verbose_name_plural = 'Версии'
+        ordering = ('version_number',)
+
 
 
 

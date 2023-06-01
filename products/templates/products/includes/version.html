@@ -1,0 +1,19 @@
+{% block content %}
+    {% if object %}
+<div class="card">
+  <div class="row no-gutters">
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title" >Продукт {{ object.product }}</h5>
+        <a href="{% url 'products:product' object.product.pk %}"> {{ object.product.name }} </a>
+          <br>
+        <a href="{% url 'products:version' object.version_number %}"> Версия № {{ object.version_number }} </a>
+        <p class="card-text mb-auto">{{ object.version_title }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+    {% else %}
+        <h5 class="card-title" >Нет версии {{ object.product }}</h5>
+    {% endif %}
+{% endblock content %}

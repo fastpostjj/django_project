@@ -1,0 +1,16 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<h3>{{  text }}</h3>
+{% include "products/includes/version.html" %}
+
+    <diov class="col-12">
+        <a href="{% url 'products:version_create' %}" class ='btn btn-primary' m-2>Создать версию &raquo;</a>
+    </diov>
+    <a href="{% url 'products:toggle_activity_version' object.product.pk %}" class="btn btn-warning float-rigth">
+            {% if object.is_active %}Деактивировать
+            {% else %}Активировать
+            {% endif %} &raquo;</a>
+
+    <a href="{% url 'products:products' %}" class="btn btn-primary">Главная &raquo;</a>
+
+{% endblock content %}

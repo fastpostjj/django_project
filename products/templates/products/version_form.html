@@ -1,0 +1,19 @@
+{% extends 'products/base.html' %}
+{% load functions %}
+
+{% block content %}
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" class="btn btn-success" value="{% if object %}Сохранить версию{% else %}Создать версию{% endif %}"  &raquo;>
+                </form>
+                <div class="card-footer">
+                    <a href="{% url 'products:versions' %}" class="btn btn-primary">Все версии</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

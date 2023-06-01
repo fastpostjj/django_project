@@ -1,0 +1,28 @@
+{% extends 'products/base.html' %}
+{% load functions %}
+
+{% block content %}
+
+<h1>{{ text }}</h1>
+<diov class="col-12">
+    <a href="{% url 'products:version_create' %}" class ='btn btn-primary' m-2>Создать версию &raquo;</a>
+</diov>
+<diov class="col-12">
+    <a href="{% url 'products:versions' %}" class ='btn btn-primary' m-2>Все версии &raquo;</a>
+</diov>
+<diov class="col-12">
+    <a href="{% url 'products:versions_draft' %}" class ='btn btn-primary' m-2>Удаленные версии &raquo;</a>
+</diov>
+      <div class="container">
+         <div class="row">
+         {% if  versions %}
+            {% for object in versions %}
+                {% include "products/includes/version.html" %}
+            {% endfor %}
+         {% else %}
+             <br>
+            <h4>Нет ни одной версии</h4>
+         {% endif %}
+    </div>
+        </div>
+{% endblock content %}

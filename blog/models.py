@@ -8,6 +8,7 @@ NULLABLE = {'null': True, 'blank': True}
 
 
 # Create your models here.
+
 class Blog(models.Model):
     """
     модель блоговой записи содержит следующие поля:

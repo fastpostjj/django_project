@@ -2,11 +2,12 @@
 
 В базе данных содержатся три таблицы:
 
-*   Product
-*   Category
+* Product
+* Category
 * Blog
+* Version
 
-Реализован CRUD для моделей Product, Category, Blog
+Реализован CRUD для моделей Product, Category, Blog, Version
 
 Для корректного подключения к базе данных настройки для подключения должны находиться в файле database.ini в корневом каталоге проекта. Файл дожен иметь следующую структуру:
 
@@ -23,15 +24,17 @@
     email=<почтовый адрес>
     password=<пароль>
 В проекте реализованы следущие url:
-*   /
+  * /
   * index/
   * contact/
   * gallery/
   * blog/
   * about/
   * categories/
+  * versions/
+  * products/
 
 Реализованы команды:
-*   save_category - сохранение данных из таблицы категории в файл save_category.json
+* save_category - сохранение данных из таблицы категории в файл save_category.json
 * save_products - сохранение данных из таблицы продукты в файл save_data.jso
 * load_data - восстановление данных из файлов

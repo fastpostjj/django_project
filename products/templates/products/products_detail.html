@@ -11,6 +11,13 @@
                 <h5 class="card-title">{{ object.name }}</h5>
                 <h5 class="card-title">{%  get_ruble object.price %}</h5>
                 <h5 class="card-title">{{ object.category }}</h5>
+                <h5 class="card-title">Список версий товара {{ object.name }}</h5>
+                {% for version in versions %}
+                    <a href="{% url 'products:version' version.pk %}" >Версия {{ version.version_number }} - {{ version.version_title }}</a>
+                    <br>
+
+                {% endfor %}
+
                 <p class="card-text">{{ object.description  }}</p>
                 <p class="card-text">Дата создания: {{ object.created_data|date:'d:m:Y' }}</p>
                 <p class="card-text">Дата последнего изменения: {{ object.last_changed_data|date:'d:m:Y' }}</p>
