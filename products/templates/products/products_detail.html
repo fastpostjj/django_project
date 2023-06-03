@@ -24,8 +24,9 @@
 
                 <div class="card-footer">
                     <a href="{% url 'products:products' %}" class="btn btn-primary">Главная &raquo;</a>
-                    <!-- <a href="{% url 'products:products' %}" class="btn btn-warning float-rigth">Деактивировать</a> -->
-                    <a href="{% url 'products:toggle_activity_product' object.pk %}" class="btn btn-warning float-rigth">{% if object.is_active %}Деактивировать{% else %}Активировать{% endif %} &raquo;</a>
+                    <a class="btn btn-warning" href={% url 'products:product_update' object.pk %}>Изменить &raquo;</a>
+                    <!-- <a href="{% url 'products:toggle_activity_product' object.pk %}" class="btn btn-warning float-rigth">{% if object.is_active %}Деактивировать{% else %}Активировать{% endif %} &raquo;</a> -->
+                    <a class="btn btn-danger" href={% url 'products:product_delete' object.pk %}>Удалить &raquo;</a>
                 </div>
           </div>
     </div>

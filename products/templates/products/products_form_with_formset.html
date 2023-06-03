@@ -1,0 +1,44 @@
+{% extends 'products/base.html' %}
+{% load functions %}
+
+{% block content %}
+<div class="col">
+<form  method="post" enctype="multipart/form-data" class="form-group">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-body">
+             <table class="table"
+                    <tr class="version-form">
+                    {% csrf_token %}
+                   <td>{{  form.as_p }}</td>
+
+                    </tr>
+                    <input type="submit" class="btn btn-success" value="{% if object %}Сохранить товар{% else %}Создать товар{% endif %}"  &raquo;>
+                <div class="card-footer">
+                    <a href="{% url 'products:products' %}" class="btn btn-primary">Главная</a>
+                </div>
+                    </table>
+            </div>
+        </div>
+ <div class="col-3">
+        <div class="card-header">
+            Версии
+        </div>
+        <div class="card-body">
+            <table class="table">
+               {{ formset.management_form }}
+                {% for form in formset.forms%}
+                    <tr class="version-form">
+                        <td>{{  form.as_p }}</td>
+
+                    </tr>
+
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</form>
+{% endblock %}

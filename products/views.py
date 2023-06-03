@@ -1,3 +1,4 @@
+from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy, reverse
@@ -66,13 +67,13 @@ class VersionCreateView(generic.CreateView):
     # fields = ('product', 'version_number', 'version_title', 'is_active')
     success_url = reverse_lazy('products:versions')
 
-
-
+        # https: // evileg.com / ru / post / 455 /
 class VersionUpdateView(generic.UpdateView):
     model = Version
     form_class = VersionForm
     # fields = ('product', 'version_number', 'version_title', 'is_active')
     success_url = reverse_lazy('products:versions')
+
 
 class VersionDeleteView(generic.DeleteView):
     model = Version
@@ -128,7 +129,26 @@ class ProductsUpdateView(generic.UpdateView):
     model = Products
     form_class = ProductsForm
     # fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
+    template_name = 'products/products_form_with_formset.html'
     success_url = reverse_lazy('products:products')
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        VersionFormset = inlineformset_factory(Products, Version, form=VersionForm, extra=1)
+        if self.request.method == "POST":
+            context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = VersionFormset(instance=self.object)
+        return context_data
+
+    def form_valid(self, form):
+        context_data = self.get_context_data()
+        formset = context_data['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
 
 class ProductsDeleteView(generic.DeleteView):
     model = Products

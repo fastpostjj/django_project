@@ -7,8 +7,11 @@
         <h5 class="card-title" >Продукт {{ object.product }}</h5>
         <a href="{% url 'products:product' object.product.pk %}"> {{ object.product.name }} </a>
           <br>
-        <a href="{% url 'products:version' object.version_number %}"> Версия № {{ object.version_number }} </a>
+        <a href="{% url 'products:version' object.pk %}"> Версия № {{ object.version_number }} </a>
         <p class="card-text mb-auto">{{ object.version_title }}</p>
+          <a class="btn btn-secondary" href={% url 'products:version' object.pk %}>Перейти &raquo;</a>
+          <a class="btn btn-warning" href={% url 'products:version_update' object.pk %}>Изменить &raquo;</a>
+          <a class="btn btn-danger" href={% url 'products:version_delete' object.pk %}>Удалить &raquo;</a>
       </div>
     </div>
   </div>
