@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 NULLABLE = {'null': True, 'blank': True}
@@ -82,10 +83,19 @@ class Version(models.Model):
         self.is_active = False
         self.save()
 
+
+    def save(self, *args, **kwargs):
+        # проверяем, есть ли уже активная версия для этого продукта
+        if self.is_active and Version.objects.filter(product=self.product, is_active=True).exclude(pk=self.pk).exists():
+            raise ValidationError('Нельзя добавить более одной активной версии для данного продукта.')
+
+        super().save(*args, **kwargs)
     class Meta:
         verbose_name = 'Версия'
         verbose_name_plural = 'Версии'
         ordering = ('version_number',)
+
+
 
 
 

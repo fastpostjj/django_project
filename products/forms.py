@@ -26,6 +26,17 @@ class VersionForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
+    def clean_is_active(self):
+        """
+        нельзя дабавить более одной активной версии
+        """
+        is_active = self.cleaned_data['is_active']
+        if is_active:# and self.instance.product.version_set.filter(is_active=True).exclude(id=self.instance.id).exists():
+            raise forms.ValidationError('Нельзя дабавить более одной активной версии')
+        return is_active
+    def save(self, commit=True):
+        super(VersionForm, self).save()
+
 class CategoryForm(forms.ModelForm):
 
     class Meta:
@@ -65,3 +76,5 @@ class ProductsForm(forms.ModelForm):
         if not is_text_valid(description):
             raise forms.ValidationError('Описание товара не должно содержать словa: ' + ", ".join(LIST_FORBIDDEN_WORD))
         return description
+
+    

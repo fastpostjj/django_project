@@ -61,6 +61,7 @@ class VersionDetailView(generic.DetailView):
         contex_data['product_pk'] = self.object.product.pk
         return contex_data
 
+
 class VersionCreateView(generic.CreateView):
     model = Version
     form_class = VersionForm
