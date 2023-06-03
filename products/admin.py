@@ -10,8 +10,9 @@ class CategoryAdmin(admin.ModelAdmin):
     """
     Для категорий выводится id и наименование в список отображения.
     """
-    list_display = ('id', 'name',)
+    list_display = ('id', 'name', 'is_active')
     list_filter = ('name',)
+    list_display_links = ('id', 'name')
 
 
 @admin.register(Products)
@@ -21,7 +22,7 @@ class ProductsAdmin(admin.ModelAdmin):
     Результат отображения фильтруется по категории, а также осуществляется
      поиск по названию и полю описания.
     """
-    list_display = ('id', 'name', 'price', 'category')
+    list_display = ('id', 'name', 'price', 'category', 'is_active')
     list_display_links = ('id', 'name')
     list_filter = ('category',)
     search_fields = ('name', 'description',)
