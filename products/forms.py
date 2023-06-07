@@ -15,7 +15,14 @@ def is_text_valid(text:str) -> bool:
             return False
     return True
 
-class VersionForm(forms.ModelForm):
+class FormStyleMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+class VersionForm(FormStyleMixin, forms.ModelForm):
 
     class Meta:
         model = Version
@@ -37,7 +44,7 @@ class VersionForm(forms.ModelForm):
     def save(self, commit=True):
         super(VersionForm, self).save()
 
-class CategoryForm(forms.ModelForm):
+class CategoryForm(FormStyleMixin, forms.ModelForm):
 
     class Meta:
         model = Category
@@ -48,7 +55,7 @@ class CategoryForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
-class ProductsForm(forms.ModelForm):
+class ProductsForm(FormStyleMixin, forms.ModelForm):
 
     class Meta:
         model = Products

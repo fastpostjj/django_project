@@ -10,20 +10,41 @@
       <li class="nav-item active">
         <a class="nav-link" href={% url "products:about" %}>О нас <span class="sr-only">(about)</span></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href={% url "products:gallery" %}>Галерея</a>
-      </li>
+      {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href={% url "products:gallery" %}>Галерея</a>
+          </li>
+      {% endif %}
        <li class="nav-item">
         <a class="nav-link" href={% url "blog:blogs" %}>Наш блог</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href={% url "products:index" %}>Последние 5 товаров</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href={% url "products:versions" %}>Версии товаров</a>
-      </li>
+      {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href={% url "products:index" %}>Последние 5 товаров</a>
+          </li>
+      {% endif %}
+      {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href={% url "products:versions" %}>Версии товаров</a>
+          </li>
+      {% endif %}
       <li class="nav-item">
         <a class="nav-link" href={% url "products:contact" %}>Контакты</a>
+      </li>
+        {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href={% url "user_auth:logout" %}>Выйти</a>
+      </li>
+        {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href={% url "user_auth:login" %}>Войти</a>
+      </li>
+        {% endif %}
+      <li class="nav-item">
+        <a class="nav-link" href={% url "user_auth:register" %}>Регистрация</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href={% url "user_auth:profile" %}>Профиль</a>
       </li>
     </ul>
 
