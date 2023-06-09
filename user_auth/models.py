@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from products.models import NULLABLE
-
+# from products.models import NULLABLE
+NULLABLE = {'null': True, 'blank': True}
 
 # Create your models here.
 

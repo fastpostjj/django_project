@@ -22,6 +22,7 @@ class FormStyleMixin:
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
+
 class VersionForm(FormStyleMixin, forms.ModelForm):
 
     class Meta:
@@ -32,14 +33,17 @@ class VersionForm(FormStyleMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+        # Задаем класс для кнопки "Создать версию"
+        self.fields['is_active'].widget.attrs.update({'class': 'form-check-input'})
+        self.fields['is_active'].label_attrs = {'class': 'form-check-label'}
 
     def clean_is_active(self):
         """
         нельзя дабавить более одной активной версии
         """
         is_active = self.cleaned_data['is_active']
-        if is_active:# and self.instance.product.version_set.filter(is_active=True).exclude(id=self.instance.id).exists():
-            raise forms.ValidationError('Нельзя дабавить более одной активной версии')
+        if is_active and self.instance.product.version_set.filter(is_active=True).exclude(id=self.instance.id).exists():
+            raise forms.ValidationError('Нельзя добавить более одной активной версии')
         return is_active
     def save(self, commit=True):
         super(VersionForm, self).save()
@@ -54,6 +58,9 @@ class CategoryForm(FormStyleMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+        # Задаем класс для кнопки "Создать версию"
+        self.fields['is_active'].widget.attrs.update({'class': 'form-check-input'})
+        self.fields['is_active'].label_attrs = {'class': 'form-check-label'}
 
 class ProductsForm(FormStyleMixin, forms.ModelForm):
 
@@ -65,6 +72,9 @@ class ProductsForm(FormStyleMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+        # Задаем класс для кнопки "Создать версию"
+        self.fields['is_active'].widget.attrs.update({'class': 'form-check-input'})
+        self.fields['is_active'].label_attrs = {'class': 'form-check-label'}
 
     def clean_name(self):
         """

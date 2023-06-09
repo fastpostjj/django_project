@@ -25,9 +25,13 @@ class VersionsListView(generic.ListView):
         'title': 'Версии товаров',
         'text': "Версии товаров"
     }
-    # def get_queryset(self, **kwargs):
+    def get_queryset(self, **kwargs):
         # queryset = super().get_queryset()
-        # queryset = queryset.filter(is_active=True).order_by('product', 'version_number', 'version_title')
+        queryset = Version.objects.filter(is_active=True).order_by('product', 'version_number', 'version_title')
+        if queryset.exists():
+            return queryset
+        else:
+            return Version.objects.none()
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['versions'] = Version.objects.filter(is_active=True).order_by('product', 'version_number', 'version_title')
@@ -68,12 +72,38 @@ class VersionCreateView(generic.CreateView):
     # fields = ('product', 'version_number', 'version_title', 'is_active')
     success_url = reverse_lazy('products:versions')
 
+    def get_queryset(self, *args, **kwargs):
+        qs = super(*args, **kwargs).get_queryset().filter(is_active=True).order_by('product', 'version_number', 'version_title')
+        if qs.exists():
+            return qs
+        else:
+            return Version.objects.none()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(*args, **kwargs).get_context_data(**kwargs)
+        context['products'] = Products.objects.all()
+        return context
+
         # https: // evileg.com / ru / post / 455 /
 class VersionUpdateView(generic.UpdateView):
     model = Version
     form_class = VersionForm
     # fields = ('product', 'version_number', 'version_title', 'is_active')
+
     success_url = reverse_lazy('products:versions')
+    def get_queryset(self, *args, **kwargs):
+        # queryset = super(*args, **kwargs).get_queryset().filter(is_active=True).order_by('product', 'version_number', 'version_title')
+        queryset = super(*args, **kwargs).get_queryset().order_by('product', 'version_number', 'version_title')
+        if queryset.exists():
+            print("queryset= ", queryset)
+            return queryset
+        else:
+            return Version.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = Products.objects.all()
+        return context
 
 
 class VersionDeleteView(generic.DeleteView):
@@ -149,7 +179,9 @@ class ProductsUpdateView(generic.UpdateView):
         if formset.is_valid():
             formset.instance = self.object
             formset.save()
-        return super().form_valid(form)
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 class ProductsDeleteView(generic.DeleteView):
     model = Products
