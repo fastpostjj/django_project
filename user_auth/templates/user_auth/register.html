@@ -6,16 +6,19 @@
         <div class="col-6">
             <div class="card">
                 <div class="card-header"></div>
-                    <div class="card-body">
                     <form method="post">
+                    <div class="card-body">
                         {% csrf_token %}
                         {{ form.as_p }}
                         <button type="submit" class="btn btn-success">Регистрация</button>
+                    </div>
+                    <div class="card-footer">
+                    После регистрации вам будет направлено письмо для подтверждения адреса.
+                        {% if user.is_authenticated %}
+                        <a href={% url "user_auth:generate_new_password" %} class="btn btn-info"> Сгенерировать новый пароль</a>
+                        {% endif %}
+                    </div>
                     </form>
-                </div>
-                <div class="card-footer">
-                    <a href={% url "user_auth:generate_new_password" %} class="btn btn-info"> Сгенерировать пароль</a>
-                </div>
             </div>
         </div>
     </div>

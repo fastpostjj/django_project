@@ -9,8 +9,12 @@ from products.forms import VersionForm, ProductsForm, CategoryForm
 from products.models import Category, Products, Version
 import random
 
+from django.shortcuts import render
+from products.context_file import current_user
 
 # Create your views here.
+
+
 
 class GetContact(View):
     def get(self, request):
@@ -79,10 +83,10 @@ class VersionCreateView(generic.CreateView):
         else:
             return Version.objects.none()
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(*args, **kwargs).get_context_data(**kwargs)
-        context['products'] = Products.objects.all()
-        return context
+    # def get_context_data(self, *args, **kwargs):
+    #     context = super(*args, **kwargs).get_context_data(**kwargs)
+    #     context['products'] = Products.objects.all()
+    #     return context
 
         # https: // evileg.com / ru / post / 455 /
 class VersionUpdateView(generic.UpdateView):
@@ -155,7 +159,12 @@ class ProductsCreateView(generic.CreateView):
             self.slug = slugify(self.title)
         super(ProductsCreateView, self).save(*args, **kwargs)
 
-
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        form.save_m2m()
+        return redirect(self.get_success_url())
 class ProductsUpdateView(generic.UpdateView):
     model = Products
     form_class = ProductsForm
@@ -254,7 +263,11 @@ class GetAbout(View):
     def get(self, request):
         title = 'О нас'
         text = 'Интернет-магазин цветов и саженцев'
-        return render(request, 'products/about.html', {'title': title, 'text': text})
+        if current_user(request):
+            current_user_name = current_user(request)['current_user']
+        else:
+            current_user_name = None
+        return render(request, 'products/about.html', {'title': title, 'text': text, 'current_user_name': current_user_name})
 
 class GetIndex(View):
     def get(self, request):

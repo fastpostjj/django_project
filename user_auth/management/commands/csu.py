@@ -6,7 +6,7 @@ from user_auth.models import User
 class Command(BaseCommand):
     def handle(self, *args, **options):
         user = User.objects.create(
-            email='admin@admin.pro',
+            email='admin1@admin.pro',
             first_name='Admin',
             last_name='SuperAdmin',
             is_staff=True,

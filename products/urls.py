@@ -11,11 +11,11 @@ app_name = 'products'
 
 urlpatterns = [
     path('index/', GetIndex.as_view(), name='index'),
-    path('about/', GetAbout.as_view(), name='about'),
+    path('', GetAbout.as_view(), name='about'),
     path('gallery/', GetGallery.as_view(), name='gallery'),
     path('contact/', GetContact.as_view(), name='contact'),
 
-    path('', ProductsListView.as_view(), name='products'),
+    path('products/', ProductsListView.as_view(), name='products'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product'),
     path('products/create/', ProductsCreateView.as_view(), name='product_create'),
     path('products/update/<int:pk>/', ProductsUpdateView.as_view(), name='product_update'),

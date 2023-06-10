@@ -149,6 +149,7 @@ EMAIL_HOST_USER = email_params['email']
 EMAIL_HOST_PASSWORD = email_params['password']
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 AUTH_USER_MODEL = 'user_auth.User'
 LOGIN_REDIRECT_URL = '/'

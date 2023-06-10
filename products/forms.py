@@ -1,4 +1,6 @@
 from django import forms
+from django.shortcuts import get_object_or_404
+
 from products.models import Category, Products, Version
 
 
@@ -39,14 +41,26 @@ class VersionForm(FormStyleMixin, forms.ModelForm):
 
     def clean_is_active(self):
         """
-        нельзя дабавить более одной активной версии
+        нельзя добавить более одной активной версии
         """
         is_active = self.cleaned_data['is_active']
-        if is_active and self.instance.product.version_set.filter(is_active=True).exclude(id=self.instance.id).exists():
-            raise forms.ValidationError('Нельзя добавить более одной активной версии')
+        product = self.cleaned_data['product']
+        if self.instance.product:
+            if is_active and self.instance.product.version_set.filter(is_active=True).exclude(id=self.instance.id).exists():
+                raise forms.ValidationError('Нельзя добавить более одной активной версии')
         return is_active
     def save(self, commit=True):
         super(VersionForm, self).save()
+
+    def save(self, commit=True):
+        version = super().save(commit=False)
+        product_id = self.data.get('product')
+        if product_id:
+            product = get_object_or_404(Products, id=product_id)
+            version.product = product
+        if commit:
+            version.save()
+        return version
 
 class CategoryForm(FormStyleMixin, forms.ModelForm):
 
