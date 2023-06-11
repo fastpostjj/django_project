@@ -49,8 +49,8 @@ class VersionForm(FormStyleMixin, forms.ModelForm):
             if is_active and self.instance.product.version_set.filter(is_active=True).exclude(id=self.instance.id).exists():
                 raise forms.ValidationError('Нельзя добавить более одной активной версии')
         return is_active
-    def save(self, commit=True):
-        super(VersionForm, self).save()
+    # def save(self, commit=True):
+    #     super(VersionForm, self).save()
 
     def save(self, commit=True):
         version = super().save(commit=False)
