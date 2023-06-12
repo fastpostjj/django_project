@@ -25,11 +25,13 @@
             <a class="nav-link" href={% url "products:index" %}>Последние 5 товаров</a>
           </li>
       {% endif %}
+    <!--
       {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href={% url "products:versions" %}>Версии товаров</a>
           </li>
       {% endif %}
+      -->
       <li class="nav-item">
         <a class="nav-link" href={% url "products:contact" %}>Контакты</a>
       </li>
