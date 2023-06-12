@@ -71,15 +71,15 @@ class VersionForm(FormStyleMixin, forms.ModelForm):
     # def save(self, commit=True):
     #     super(VersionForm, self).save()
 
-    def save(self, commit=True):
-        version = super().save(commit=False)
-        product_id = self.data.get('product')
-        if product_id:
-            product = get_object_or_404(Products, id=product_id)
-            version.product = product
-        if commit:
-            version.save()
-        return version
+    # def save(self, commit=True):
+    #     version = super().save(commit=False)
+    #     product_id = self.data.get('product')
+    #     if product_id:
+    #         product = get_object_or_404(Products, id=product_id)
+    #         version.product = product
+    #     if commit:
+    #         version.save()
+    #     return version
 
 class CategoryForm(FormStyleMixin, forms.ModelForm):
 
