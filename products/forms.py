@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import BaseInlineFormSet, inlineformset_factory
 from django.shortcuts import get_object_or_404
 
 from products.models import Category, Products, Version
@@ -9,13 +10,31 @@ LIST_FORBIDDEN_WORD =["казино", "криптовалюта", "крипта"
 def is_text_valid(text:str) -> bool:
     """
     :param text:
-    :return: True, if text does not contains forbidden words
+    :return: True, if text does not contain forbidden words
     """
     text = text.lower()
     for word in LIST_FORBIDDEN_WORD:
         if text.find(word, 0, len(text)) != -1:
             return False
     return True
+
+# class VersionFormSet(BaseInlineFormSet):
+#     def clean(self):
+#         super().clean()
+#         curent_version_count = 0
+#         for form in self.forms:
+#             if not form.is_valid():
+#                 return
+#             if form.cleaned_data and form.cleaned_data.get('is_current_version'):
+#                 curent_version_count += 1
+#             if curent_version_count > 1:
+#                 raise form.ValidationError('Нельзя добавить более одной активной версии')
+# ProductVersionFormSet = inlineformset_factory(
+#     parent_model=Products,
+#     model=Version,
+#     form=VersionFormSet,
+#     extra=1
+# )
 
 class FormStyleMixin:
     def __init__(self, *args, **kwargs):

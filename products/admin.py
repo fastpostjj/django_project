@@ -22,10 +22,10 @@ class ProductsAdmin(admin.ModelAdmin):
     Результат отображения фильтруется по категории, а также осуществляется
      поиск по названию и полю описания.
     """
-    list_display = ('id', 'name', 'price', 'category', 'is_active', 'user')
+    list_display = ('id', 'name', 'price', 'category', 'is_active', 'user', 'is_published')
     list_display_links = ('id', 'name')
-    list_filter = ('category',)
-    search_fields = ('name', 'description',)
+    list_filter = ('category', 'is_published')
+    search_fields = ('name', 'description', 'is_published')
 
 
 @admin.register(Version)

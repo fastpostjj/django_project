@@ -1,9 +1,11 @@
 from django.forms import inlineformset_factory
+from django.http import request
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy, reverse
 from django.views import generic, View
 from django import forms
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 
 from products.forms import VersionForm, ProductsForm, CategoryForm
 from products.models import Category, Products, Version
@@ -23,6 +25,7 @@ class GetContact(View):
         return render(request, 'products/contact.html', {'title': title, 'text': text})
 
 # Version
+
 class VersionsListView(generic.ListView):
     model = Version
     extra_context = {
@@ -126,8 +129,9 @@ class Toggle_Activity_Version(View):
         return redirect(reverse('products:version', args=[version.pk]))
 
 
-class ProductDetailView(generic.DetailView):
+class ProductDetailView(LoginRequiredMixin, generic.DetailView):
     model = Products
+    permission_required = ["products.view_products", "products.change_products"]
     def get_context_data(self, **kwargs):
         contex_data = super().get_context_data(**kwargs)
         contex_data['title'] = self.get_object()
@@ -136,18 +140,31 @@ class ProductDetailView(generic.DetailView):
         return contex_data
 
 
-class ProductsListView(generic.ListView):
+class ProductsListView(LoginRequiredMixin, generic.ListView):
     model = Products
     extra_context = {
         'title': 'Наши товары',
         'text': "Интернет-магазин саженцев и семян"
     }
+    permission_required = ["products.view_products", "products.change_products"]
+
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(is_active=True)
+        queryset = queryset.filter(is_active=True, is_published=True)
+        return queryset
+class ProductsNotPublishedView(LoginRequiredMixin, generic.ListView):
+    model = Products
+    extra_context = {
+        'title': 'Наши товары',
+        'text': "Неопубликованные товары"
+    }
+    permission_required = ["products.view_products"]
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True, is_published=False)
         return queryset
 
-class ProductsCreateView(generic.CreateView):
+class ProductsCreateView(LoginRequiredMixin, generic.CreateView):
     model = Products
     form_class = ProductsForm
     # fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
@@ -160,17 +177,20 @@ class ProductsCreateView(generic.CreateView):
         super(ProductsCreateView, self).save(*args, **kwargs)
 
     def form_valid(self, form):
+        """Текущий пользователь будет автором созданного продукта"""
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
         form.save_m2m()
         return redirect(self.get_success_url())
-class ProductsUpdateView(generic.UpdateView):
+class ProductsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
     model = Products
     form_class = ProductsForm
     # fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
     template_name = 'products/products_form_with_formset.html'
     success_url = reverse_lazy('products:products')
+    # multiple of permissions:
+    permission_required = ["products.view_products", "products.change_products"]
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -192,7 +212,7 @@ class ProductsUpdateView(generic.UpdateView):
         else:
             return self.form_invalid(form)
 
-class ProductsDeleteView(generic.DeleteView):
+class ProductsDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Products
     success_url = reverse_lazy('products:products')
 

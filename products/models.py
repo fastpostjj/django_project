@@ -44,6 +44,7 @@ class Products(models.Model):
     last_changed_data = models.DateTimeField(verbose_name='Дата последнего изменения')
     is_active = models.BooleanField(default=True, verbose_name='активный')
     user = models.ForeignKey(User, verbose_name='пользователь-автор', default=None, on_delete=models.SET_NULL, **NULLABLE)
+    is_published = models.BooleanField(default=False, verbose_name='опубликован')
 
     def __str__(self):
         # return f'{self.id} {self.name}, {self.category}, {self.price}'
@@ -57,6 +58,12 @@ class Products(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
         ordering = ('name', 'price')
+        permissions = {
+            ("set_published_status", "can published product"),
+            ("set_description_status", "can change description product"),
+            ("set_category_status", "can change category product")
+
+        }
 
 class Version(models.Model):
     """

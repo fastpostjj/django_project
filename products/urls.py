@@ -1,7 +1,7 @@
 from django.urls import path
 # from products.views import about , index, contact, gallery,
 from products.views import ProductDetailView, ProductsListView, ProductsCreateView, \
-     ProductsUpdateView, ProductsDeleteView, toggle_activity_product, GetIndex, GetContact, \
+     ProductsUpdateView, ProductsDeleteView, ProductsNotPublishedView, toggle_activity_product, GetIndex, GetContact, \
     GetAbout, GetGallery, CategoryUpdateView, CategoryCreateView, CategoryDetailView, \
     CategoriesListView, CategoryDeleteView, toggle_activity_category
 from products.views import VersionDetailView, VersionsListView, VersionCreateView, \
@@ -16,6 +16,7 @@ urlpatterns = [
     path('contact/', GetContact.as_view(), name='contact'),
 
     path('products/', ProductsListView.as_view(), name='products'),
+    path('products/not_published', ProductsNotPublishedView.as_view(), name='products_not_published'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product'),
     path('products/create/', ProductsCreateView.as_view(), name='product_create'),
     path('products/update/<int:pk>/', ProductsUpdateView.as_view(), name='product_update'),

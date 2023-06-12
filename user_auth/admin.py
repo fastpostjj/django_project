@@ -13,7 +13,7 @@ class UserAdmin(admin.ModelAdmin):
     is_staff
     is_superuser
     """
-    list_display = ('id', 'email', 'first_name', 'last_name', 'country', 'verification_kod', 'is_verify')
+    list_display = ('id', 'email', 'first_name', 'last_name', 'country')
 
-    list_filter = ('id', 'email', 'first_name', 'last_name', 'country', 'verification_kod', 'is_verify')
+    list_filter = ('id', 'email', 'first_name', 'last_name', 'country')
     list_display_links = ('id', 'email', 'first_name', 'last_name', 'country')

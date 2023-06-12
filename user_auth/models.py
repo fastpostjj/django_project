@@ -11,8 +11,8 @@ class User(AbstractUser):
     phone = models.CharField(max_length=35, verbose_name='телефон', **NULLABLE)
     avatar = models.ImageField(upload_to='users_auth/', verbose_name='аватар', **NULLABLE)
     country = models.CharField(max_length=150, verbose_name='страна', **NULLABLE)
-    verification_kod = models.IntegerField(verbose_name="код подтверждения", **NULLABLE)
-    is_verify = models.BooleanField(verbose_name='прошел верификацию', default=False)
+    # verification_kod = models.IntegerField(verbose_name="код подтверждения", **NULLABLE)
+    # is_verify = models.BooleanField(verbose_name='прошел верификацию', default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
