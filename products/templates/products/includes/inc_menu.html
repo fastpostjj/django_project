@@ -1,30 +1,57 @@
 {% block mainmenu %}
    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href={% url "products:products" %}>Главная</a>
+  <a class="navbar-brand" href={% url "products:about" %}>Главная</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+     {% if user.is_authenticated %}
       <li class="nav-item active">
-        <a class="nav-link" href={% url "products:about" %}>О нас <span class="sr-only">(about)</span></a>
+        <a class="nav-link" href={% url "products:products" %}>Каталог</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href={% url "products:gallery" %}>Галерея</a>
-      </li>
+     {% endif %}
+      {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href={% url "products:gallery" %}>Галерея</a>
+          </li>
+      {% endif %}
        <li class="nav-item">
         <a class="nav-link" href={% url "blog:blogs" %}>Наш блог</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href={% url "products:index" %}>Последние 5 товаров</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href={% url "products:versions" %}>Версии товаров</a>
-      </li>
+      {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href={% url "products:index" %}>Последние 5 товаров</a>
+          </li>
+      {% endif %}
+    <!--
+      {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href={% url "products:versions" %}>Версии товаров</a>
+          </li>
+      {% endif %}
+      -->
       <li class="nav-item">
         <a class="nav-link" href={% url "products:contact" %}>Контакты</a>
       </li>
+        {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href={% url "user_auth:logout" %}>Выйти</a>
+      </li>
+        {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href={% url "user_auth:login" %}>Войти</a>
+      </li>
+        {% endif %}
+      <li class="nav-item">
+        <a class="nav-link" href={% url "user_auth:register" %}>Регистрация</a>
+      </li>
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href={% url "user_auth:profile" %}>Профиль</a>
+      </li>
+      {% endif %}
     </ul>
 
   </div>

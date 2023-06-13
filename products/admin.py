@@ -22,15 +22,15 @@ class ProductsAdmin(admin.ModelAdmin):
     Результат отображения фильтруется по категории, а также осуществляется
      поиск по названию и полю описания.
     """
-    list_display = ('id', 'name', 'price', 'category', 'is_active')
+    list_display = ('id', 'name', 'price', 'category', 'is_active', 'user', 'is_published')
     list_display_links = ('id', 'name')
-    list_filter = ('category',)
-    search_fields = ('name', 'description',)
+    list_filter = ('category', 'is_published')
+    search_fields = ('name', 'description', 'is_published')
 
 
 @admin.register(Version)
 class VersionAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'version_number', 'version_title', 'is_active')
-    list_display_links = ('id', 'version_number', 'version_title')
-    list_filter = ('id', 'version_number', 'version_title')
+    list_display_links = ('id', 'product', 'version_number', 'version_title')
+    list_filter = ('id', 'product', 'version_number', 'version_title')
     search_fields = ('id', 'product', 'version_number', 'version_title', 'is_active')

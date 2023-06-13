@@ -1,4 +1,9 @@
 {% extends 'products/base.html' %}
     {% block content %}
         <h1>{{ text }}</h1>
+    {% if current_user_name %}
+        Добро пожаловать, {{ current_user_name.email }}!
+    {% else %}
+        Необходимо войти в систему.
+    {% endif %}
     {% endblock content %}

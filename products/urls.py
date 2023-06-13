@@ -1,7 +1,7 @@
 from django.urls import path
 # from products.views import about , index, contact, gallery,
 from products.views import ProductDetailView, ProductsListView, ProductsCreateView, \
-     ProductsUpdateView, ProductsDeleteView, toggle_activity_product, GetIndex, GetContact, \
+     ProductsUpdateView, ProductsDeleteView, ProductsNotPublishedView, toggle_activity_product, GetIndex, GetContact, \
     GetAbout, GetGallery, CategoryUpdateView, CategoryCreateView, CategoryDetailView, \
     CategoriesListView, CategoryDeleteView, toggle_activity_category
 from products.views import VersionDetailView, VersionsListView, VersionCreateView, \
@@ -11,11 +11,12 @@ app_name = 'products'
 
 urlpatterns = [
     path('index/', GetIndex.as_view(), name='index'),
-    path('about/', GetAbout.as_view(), name='about'),
+    path('', GetAbout.as_view(), name='about'),
     path('gallery/', GetGallery.as_view(), name='gallery'),
     path('contact/', GetContact.as_view(), name='contact'),
 
-    path('', ProductsListView.as_view(), name='products'),
+    path('products/', ProductsListView.as_view(), name='products'),
+    path('products/not_published', ProductsNotPublishedView.as_view(), name='products_not_published'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product'),
     path('products/create/', ProductsCreateView.as_view(), name='product_create'),
     path('products/update/<int:pk>/', ProductsUpdateView.as_view(), name='product_update'),
@@ -32,7 +33,7 @@ urlpatterns = [
     path('versions/', VersionsListView.as_view(), name='versions'),
     path('versions/draft/', VersionsDraftListView.as_view(), name='versions_draft'),
     path('version/<int:pk>/', VersionDetailView.as_view(), name='version'),
-    path('version/create/', VersionCreateView.as_view(), name='version_create'),
+    # path('version/create/', VersionCreateView.as_view(), name='version_create'),
     path('version/update/<int:pk>/', VersionUpdateView.as_view(), name='version_update'),
     path('version/delete/<int:pk>/', VersionDeleteView.as_view(), name='version_delete'),
     path('version/toggle/<int:pk>/', Toggle_Activity_Version.as_view(), name='toggle_activity_version'),

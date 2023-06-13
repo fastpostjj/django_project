@@ -1,4 +1,7 @@
 from django import forms
+from django.forms import BaseInlineFormSet, inlineformset_factory
+from django.shortcuts import get_object_or_404
+
 from products.models import Category, Products, Version
 
 
@@ -7,7 +10,7 @@ LIST_FORBIDDEN_WORD =["казино", "криптовалюта", "крипта"
 def is_text_valid(text:str) -> bool:
     """
     :param text:
-    :return: True, if text does not contains forbidden words
+    :return: True, if text does not contain forbidden words
     """
     text = text.lower()
     for word in LIST_FORBIDDEN_WORD:
@@ -15,7 +18,33 @@ def is_text_valid(text:str) -> bool:
             return False
     return True
 
-class VersionForm(forms.ModelForm):
+# class VersionFormSet(BaseInlineFormSet):
+#     def clean(self):
+#         super().clean()
+#         curent_version_count = 0
+#         for form in self.forms:
+#             if not form.is_valid():
+#                 return
+#             if form.cleaned_data and form.cleaned_data.get('is_current_version'):
+#                 curent_version_count += 1
+#             if curent_version_count > 1:
+#                 raise form.ValidationError('Нельзя добавить более одной активной версии')
+# ProductVersionFormSet = inlineformset_factory(
+#     parent_model=Products,
+#     model=Version,
+#     form=VersionFormSet,
+#     extra=1
+# )
+
+class FormStyleMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+
+class VersionForm(FormStyleMixin, forms.ModelForm):
 
     class Meta:
         model = Version
@@ -25,19 +54,34 @@ class VersionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+        # Задаем класс для кнопки "Создать версию"
+        self.fields['is_active'].widget.attrs.update({'class': 'form-check-input'})
+        self.fields['is_active'].label_attrs = {'class': 'form-check-label'}
 
     def clean_is_active(self):
         """
-        нельзя дабавить более одной активной версии
+        нельзя добавить более одной активной версии
         """
         is_active = self.cleaned_data['is_active']
-        if is_active:# and self.instance.product.version_set.filter(is_active=True).exclude(id=self.instance.id).exists():
-            raise forms.ValidationError('Нельзя дабавить более одной активной версии')
+        product = self.cleaned_data['product']
+        if self.instance.product:
+            if is_active and self.instance.product.version_set.filter(is_active=True).exclude(id=self.instance.id).exists():
+                raise forms.ValidationError('Нельзя добавить более одной активной версии')
         return is_active
-    def save(self, commit=True):
-        super(VersionForm, self).save()
+    # def save(self, commit=True):
+    #     super(VersionForm, self).save()
 
-class CategoryForm(forms.ModelForm):
+    # def save(self, commit=True):
+    #     version = super().save(commit=False)
+    #     product_id = self.data.get('product')
+    #     if product_id:
+    #         product = get_object_or_404(Products, id=product_id)
+    #         version.product = product
+    #     if commit:
+    #         version.save()
+    #     return version
+
+class CategoryForm(FormStyleMixin, forms.ModelForm):
 
     class Meta:
         model = Category
@@ -47,8 +91,11 @@ class CategoryForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+        # Задаем класс для кнопки "Создать версию"
+        self.fields['is_active'].widget.attrs.update({'class': 'form-check-input'})
+        self.fields['is_active'].label_attrs = {'class': 'form-check-label'}
 
-class ProductsForm(forms.ModelForm):
+class ProductsForm(FormStyleMixin, forms.ModelForm):
 
     class Meta:
         model = Products
@@ -58,6 +105,9 @@ class ProductsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+        # Задаем класс для кнопки "Создать версию"
+        self.fields['is_active'].widget.attrs.update({'class': 'form-check-input'})
+        self.fields['is_active'].label_attrs = {'class': 'form-check-label'}
 
     def clean_name(self):
         """

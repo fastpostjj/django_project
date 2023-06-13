@@ -8,6 +8,9 @@
     <a href="{% url 'products:product_create' %}" class ='btn btn-primary' m-2>Создать товар &raquo;</a>
 </diov>
 <diov class="col-12">
+    <a href="{% url 'products:products_not_published' %}" class ='btn btn-primary' m-2>Неопубликованные товары &raquo;</a>
+</diov>
+<diov class="col-12">
     <a href="{% url 'products:categories' %}" class ='btn btn-primary' m-2>Все категории &raquo;</a>
 </diov>
       <div class="container">
@@ -31,8 +34,12 @@
                     <p class="card-text">Дата создания: {{ object.created_data|date:'d:m:Y' }}</p>
                     <p class="card-text">Дата последнего изменения: {{ object.last_changed_data|date:'d:m:Y' }}</p>
                     <a class="btn btn-secondary" href={% url 'products:product' object.pk %}>Перейти &raquo;</a>
+                  {%  if perms.products.change_product %}
                     <a class="btn btn-warning" href={% url 'products:product_update' object.pk %}>Изменить &raquo;</a>
+                  {% endif %}
+                  {%  if perms.products.delete_product %}
                     <a class="btn btn-danger" href={% url 'products:product_delete' object.pk %}>Удалить &raquo;</a>
+                  {% endif %}
               </div>
             </div>
       </div>
