@@ -33,8 +33,19 @@ class Products(models.Model):
     Цена за покупку
     Дата создания
     Дата последнего изменения
+    user
+    name
+    description
+    image
+    category
+    price
+    created_data
+    last_changed_data
+    is_active
+    user
+    is_published
     """
-    user = User.objects.filter(pk=2)
+    # user = User.objects.filter(pk=2)
     name = models.CharField(max_length=150, verbose_name='Название')
     description = models.TextField(verbose_name='Описание', **NULLABLE)
     image = models.ImageField(verbose_name='Превью', upload_to='products/', **NULLABLE)
@@ -62,7 +73,7 @@ class Products(models.Model):
             ("set_published_status", "can published product"),
             ("set_description_status", "can change description product"),
             ("set_category_status", "can change category product")
-
+            # ("set_publ_category_descr_status", "can change published product, description, category product")
         }
 
 class Version(models.Model):

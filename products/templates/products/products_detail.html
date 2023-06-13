@@ -21,13 +21,14 @@
                 <p class="card-text">{{ object.description  }}</p>
                 <p class="card-text">Дата создания: {{ object.created_data|date:'d:m:Y' }}</p>
                 <p class="card-text">Дата последнего изменения: {{ object.last_changed_data|date:'d:m:Y' }}</p>
+                <p class="card-text">Автор: {{ object.user }}</p>
 
                 <div class="card-footer">
-                    <a href="{% url 'products:products' %}" class="btn btn-primary">Главная &raquo;</a>
-                {%  if perms.products.change_product %}
+                    <a href="{% url 'products:about' %}" class="btn btn-primary">Главная &raquo;</a>
+                {%  if perms.products.change_products %}
                     <a class="btn btn-warning" href={% url 'products:product_update' object.pk %}>Изменить &raquo;</a>
                 {% endif %}
-                {%  if perms.products.delete_product %}
+                {%  if perms.products.delete_products %}
                     <!-- <a href="{% url 'products:toggle_activity_product' object.pk %}" class="btn btn-warning float-rigth">{% if object.is_active %}Деактивировать{% else %}Активировать{% endif %} &raquo;</a> -->
                     <a class="btn btn-danger" href={% url 'products:product_delete' object.pk %}>Удалить &raquo;</a>
                 {% endif %}

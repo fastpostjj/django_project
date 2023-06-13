@@ -95,6 +95,20 @@ class CategoryForm(FormStyleMixin, forms.ModelForm):
         self.fields['is_active'].widget.attrs.update({'class': 'form-check-input'})
         self.fields['is_active'].label_attrs = {'class': 'form-check-label'}
 
+class ProductsFormCut(FormStyleMixin, forms.ModelForm):
+    class Meta:
+        model = Products
+        exclude = ['is_published', 'description', 'category']
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            for field_name, field in self.fields.items():
+                field.widget.attrs['class'] = 'form-control'
+            # Задаем класс для кнопки "Создать версию"
+            self.fields['is_active'].widget.attrs.update({'class': 'form-check-input'})
+            self.fields['is_active'].label_attrs = {'class': 'form-check-label'}
+            self.fields['is_published'].widget.attrs.update({'class': 'form-check-input'})
+            self.fields['is_published'].label_attrs = {'class': 'form-check-label'}
 class ProductsForm(FormStyleMixin, forms.ModelForm):
 
     class Meta:
@@ -108,6 +122,8 @@ class ProductsForm(FormStyleMixin, forms.ModelForm):
         # Задаем класс для кнопки "Создать версию"
         self.fields['is_active'].widget.attrs.update({'class': 'form-check-input'})
         self.fields['is_active'].label_attrs = {'class': 'form-check-label'}
+        self.fields['is_published'].widget.attrs.update({'class': 'form-check-input'})
+        self.fields['is_published'].label_attrs = {'class': 'form-check-label'}
 
     def clean_name(self):
         """
