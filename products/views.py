@@ -1,5 +1,5 @@
 from django.forms import inlineformset_factory
-from django.http import request
+from django.http import request, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy, reverse
@@ -7,7 +7,7 @@ from django.views import generic, View
 from django import forms
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 
-from products.forms import VersionForm, ProductsForm, CategoryForm
+from products.forms import VersionForm, ProductsForm, CategoryForm, ProductsFormCut
 from products.models import Category, Products, Version
 import random
 
@@ -129,9 +129,9 @@ class Toggle_Activity_Version(View):
         return redirect(reverse('products:version', args=[version.pk]))
 
 
-class ProductDetailView(LoginRequiredMixin, generic.DetailView):
+class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.DetailView):
     model = Products
-    permission_required = ["products.view_products", "products.change_products"]
+    permission_required = ["products.view_products"]
     def get_context_data(self, **kwargs):
         contex_data = super().get_context_data(**kwargs)
         contex_data['title'] = self.get_object()
@@ -140,34 +140,36 @@ class ProductDetailView(LoginRequiredMixin, generic.DetailView):
         return contex_data
 
 
-class ProductsListView(LoginRequiredMixin, generic.ListView):
+class ProductsListView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     model = Products
+    permission_required = ["products.view_products"]
     extra_context = {
         'title': 'Наши товары',
         'text': "Интернет-магазин саженцев и семян"
     }
-    permission_required = ["products.view_products", "products.change_products"]
+    permission_required = ["products.view_products"]
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(is_active=True, is_published=True)
         return queryset
-class ProductsNotPublishedView(LoginRequiredMixin, generic.ListView):
+class ProductsNotPublishedView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     model = Products
+    permission_required = ["products.view_products"]
     extra_context = {
         'title': 'Наши товары',
         'text': "Неопубликованные товары"
     }
-    permission_required = ["products.view_products"]
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(is_active=True, is_published=False)
         return queryset
 
-class ProductsCreateView(LoginRequiredMixin, generic.CreateView):
+class ProductsCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
     model = Products
     form_class = ProductsForm
     # fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
+    permission_required = ["products.add_products"]
     success_url = reverse_lazy('products:products')
 
     def save(self, *args, **kwargs):
@@ -184,13 +186,59 @@ class ProductsCreateView(LoginRequiredMixin, generic.CreateView):
         form.save_m2m()
         return redirect(self.get_success_url())
 class ProductsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+    # permission_required = ["products.change_products", "set_publ_category_descr_status"]
+    # permission_required = ["products.change_products", "set_published_status", "set_description_status", "set_category_status"]
     model = Products
-    form_class = ProductsForm
-    # fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image')
+    # form_class = ProductsForm
+    fields = ('name', 'description', 'price', 'category', 'created_data', 'last_changed_data', 'image', 'is_active', 'user', 'is_published')
+
     template_name = 'products/products_form_with_formset.html'
     success_url = reverse_lazy('products:products')
-    # multiple of permissions:
-    permission_required = ["products.view_products", "products.change_products"]
+    permission_required = ["products.change_products"]
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.user != self.request.user:
+            raise Http404("Вы не являетесь владельцем этого товара")
+
+        return self.object
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     obj = get_object_or_404(Products, pk=self.kwargs['pk'])
+    #     if self.request.user == obj.user:
+    #         return queryset.filter(pk=self.kwargs['pk'])
+    #     else:
+    #         # return render(self.request, 'products/error.html', {'error_message': 'Access denied'})
+    #         # return queryset.none()
+    #         raise Http404("Товар не найден")
+    #
+    # def handle_no_permission(self):
+    #     context = {'text':'Ошибка', 'error_message': 'Вы не являетесь владельцем этого товара'}
+    #     # return render(self.request, 'products/error.html', context)
+    #     # Редиректим на страницу товаров
+    #     # return redirect(reverse_lazy('products:about'))
+    #
+    #     # return render(self.request, 'products/error.html', context)
+    #     return redirect('products:about')
+
+    def get_form_class(self, *args, **kwargs):
+        # if self.object.user != self.request.user:
+        #
+        #     product = Products.objects.all()
+        #     print('self.object.user=',self.object.user, ' self.request.user=', self.request.user)
+        #     # print(product.user)
+        #     # return redirect(reverse('products:error'))
+        #     class_form = ProductsFormCut
+
+
+        if self.request.user.has_perm('products.set_published_status') and\
+            self.request.user.has_perm('products.set_description_status') and\
+            self.request.user.has_perm('products.set_category_status'):
+            class_form = ProductsForm
+        else:
+            class_form = ProductsFormCut
+        return class_form
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -215,6 +263,7 @@ class ProductsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Up
 class ProductsDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Products
     success_url = reverse_lazy('products:products')
+    permission_required = ["products.delete_products"]
 
 def toggle_activity_product(request, pk):
     products = get_object_or_404(Products, pk=pk)
@@ -310,6 +359,11 @@ class GetGallery(View):
         return render(request, 'products/products_detail.html',
                       {'title': title, 'text': text, 'object': random_object, })
 
+
+def error(request):
+    title = 'Ошибка'
+    text = 'Ошибка'
+    return render(request, 'products/error.html', {'title': title, 'text': text})
 
 # def contact(request):
 #     title = 'Контакты'

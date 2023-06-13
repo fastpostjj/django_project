@@ -6,6 +6,7 @@ from products.views import ProductDetailView, ProductsListView, ProductsCreateVi
     CategoriesListView, CategoryDeleteView, toggle_activity_category
 from products.views import VersionDetailView, VersionsListView, VersionCreateView, \
     VersionUpdateView, Toggle_Activity_Version, VersionDeleteView, VersionsDraftListView
+from products.views import error
 
 app_name = 'products'
 
@@ -22,6 +23,7 @@ urlpatterns = [
     path('products/update/<int:pk>/', ProductsUpdateView.as_view(), name='product_update'),
     path('products/delete/<int:pk>/', ProductsDeleteView.as_view(), name='product_delete'),
     path('products/toggle/<int:pk>/', toggle_activity_product, name='toggle_activity_product'),
+    path('products/error/', error, name='error'),
 
     path('categories/', CategoriesListView.as_view(), name='categories'),
     path('category/<int:pk>/', CategoryDetailView.as_view(), name='category'),

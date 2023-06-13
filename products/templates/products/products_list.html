@@ -33,11 +33,12 @@
                     <p class="card-text">{% get_ruble object.price %}</p>
                     <p class="card-text">Дата создания: {{ object.created_data|date:'d:m:Y' }}</p>
                     <p class="card-text">Дата последнего изменения: {{ object.last_changed_data|date:'d:m:Y' }}</p>
+                    <p class="card-text">Автор: {{ object.user }}</p>
                     <a class="btn btn-secondary" href={% url 'products:product' object.pk %}>Перейти &raquo;</a>
-                  {%  if perms.products.change_product %}
+                  {%  if perms.products.change_products %}
                     <a class="btn btn-warning" href={% url 'products:product_update' object.pk %}>Изменить &raquo;</a>
                   {% endif %}
-                  {%  if perms.products.delete_product %}
+                  {%  if perms.products.delete_products %}
                     <a class="btn btn-danger" href={% url 'products:product_delete' object.pk %}>Удалить &raquo;</a>
                   {% endif %}
               </div>
