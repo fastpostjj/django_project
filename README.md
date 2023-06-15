@@ -23,16 +23,13 @@
     [email]
     email=<почтовый адрес>
     password=<пароль>
-В проекте реализованы следущие url:
-  * /
-  * index/
-  * contact/
-  * gallery/
-  * blog/
-  * about/
-  * categories/
-  * versions/
-  * products/
+Для пользователей с правами (модераторы):
+*   products.set_published_status
+*   products.set_description_status
+*   products.set_category_status
+при редактировании продукта вызывается полная форма продукта. Для остальных - без полей published_status, description и category.
+Все страницы с продуктами доступны только авторизованным пользователям.
+Редактирование продукта доступно только его владельцу.
 
 Реализованы команды:
 * save_category - сохранение данных из таблицы категории в файл save_category.json

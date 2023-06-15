@@ -1,5 +1,6 @@
+from django.core.cache import cache
 from django.forms import inlineformset_factory
-from django.http import request, Http404
+from django.http import request, Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy, reverse
@@ -7,6 +8,7 @@ from django.views import generic, View
 from django import forms
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 
+from config.settings import CACHE_ENABLED
 from products.forms import VersionForm, ProductsForm, CategoryForm, ProductsFormCut
 from products.models import Category, Products, Version
 import random
@@ -23,6 +25,21 @@ class GetContact(View):
         title = 'Контакты'
         text = 'Посетить нас:'
         return render(request, 'products/contact.html', {'title': title, 'text': text})
+
+def cache_example():
+    if CACHE_ENABLED:
+        # Проверяем включенность кеша
+        key = f'products_list' # Создаем ключ для хранения
+        products_list = cache.get(key) # Пытаемся получить данные
+        if products_list is None:
+            # Если данные не были получены из кеша, то выбираем из БД и записываем в кеш
+            products_list = Products.objects.all()
+            cache.set(key, hivepay_month)
+    else:
+        # Если кеш не был подключен, то просто обращаемся к БД
+        products_list = Products.objects.all()
+    # Возвращаем результат
+    return products_list
 
 # Version
 
@@ -72,7 +89,6 @@ class VersionDetailView(generic.DetailView):
         contex_data['product_pk'] = self.object.product.pk
         return contex_data
 
-
 class VersionCreateView(generic.CreateView):
     model = Version
     form_class = VersionForm
@@ -92,6 +108,7 @@ class VersionCreateView(generic.CreateView):
     #     return context
 
         # https: // evileg.com / ru / post / 455 /
+
 class VersionUpdateView(generic.UpdateView):
     model = Version
     form_class = VersionForm
@@ -111,7 +128,6 @@ class VersionUpdateView(generic.UpdateView):
         context = super().get_context_data(**kwargs)
         context['products'] = Products.objects.all()
         return context
-
 
 class VersionDeleteView(generic.DeleteView):
     model = Version
@@ -186,7 +202,7 @@ class ProductsCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Cr
         form.save_m2m()
         return redirect(self.get_success_url())
 class ProductsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
-    # permission_required = ["products.change_products", "set_publ_category_descr_status"]
+
     # permission_required = ["products.change_products", "set_published_status", "set_description_status", "set_category_status"]
     model = Products
     # form_class = ProductsForm
@@ -196,49 +212,30 @@ class ProductsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Up
     success_url = reverse_lazy('products:products')
     permission_required = ["products.change_products"]
 
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.object.user != self.request.user:
-            raise Http404("Вы не являетесь владельцем этого товара")
-
-        return self.object
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     obj = get_object_or_404(Products, pk=self.kwargs['pk'])
-    #     if self.request.user == obj.user:
-    #         return queryset.filter(pk=self.kwargs['pk'])
-    #     else:
-    #         # return render(self.request, 'products/error.html', {'error_message': 'Access denied'})
-    #         # return queryset.none()
-    #         raise Http404("Товар не найден")
-    #
-    # def handle_no_permission(self):
-    #     context = {'text':'Ошибка', 'error_message': 'Вы не являетесь владельцем этого товара'}
-    #     # return render(self.request, 'products/error.html', context)
-    #     # Редиректим на страницу товаров
-    #     # return redirect(reverse_lazy('products:about'))
-    #
-    #     # return render(self.request, 'products/error.html', context)
-    #     return redirect('products:about')
-
     def get_form_class(self, *args, **kwargs):
-        # if self.object.user != self.request.user:
-        #
-        #     product = Products.objects.all()
-        #     print('self.object.user=',self.object.user, ' self.request.user=', self.request.user)
-        #     # print(product.user)
-        #     # return redirect(reverse('products:error'))
-        #     class_form = ProductsFormCut
-
-
         if self.request.user.has_perm('products.set_published_status') and\
             self.request.user.has_perm('products.set_description_status') and\
             self.request.user.has_perm('products.set_category_status'):
+            print("все разрешения есть")
             class_form = ProductsForm
         else:
+            print("не все разрешения есть")
             class_form = ProductsFormCut
         return class_form
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.user != request.user:
+            return redirect(reverse_lazy('products:error'))
+        return super().get(request, args, kwargs)
+
+    # Вариант 2
+    # def get_object(self, queryset=None):
+    #     self.object = super().get_object(queryset)
+    #     if self.object.user != self.request.user:
+    #         raise Http404("Вы не являетесь владельцем этого товара")
+    #
+    #     return self.object
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -360,10 +357,11 @@ class GetGallery(View):
                       {'title': title, 'text': text, 'object': random_object, })
 
 
-def error(request):
-    title = 'Ошибка'
-    text = 'Ошибка'
-    return render(request, 'products/error.html', {'title': title, 'text': text})
+def error(request, title = 'Ошибка', text = 'Ошибка', error_message = 'Вы не являетесь владельцем этого товара'):
+    # title = 'Ошибка'
+    # text = 'Ошибка'
+    # error_message = 'Вы не являетесь владельцем этого товара'
+    return render(request, 'products/error.html', {'title': title, 'text': text, 'error_message':error_message})
 
 # def contact(request):
 #     title = 'Контакты'

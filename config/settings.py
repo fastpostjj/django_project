@@ -13,9 +13,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from config_file import get_database_params, get_email_params, databasename
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,6 +30,14 @@ SECRET_KEY = 'django-insecure-iv!#ru54omkp2uz_6p1s5w^*i=g-i08h%eyr4rimfjnma*axkl
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# Чтение файла с переменными окружения
+dot_env = os.path.join(BASE_DIR, '.env')
+load_dotenv(dotenv_path=dot_env)
+
+# Использование переменных окружения
+CACHE_ENABLED = os.getenv('CACHE_ENABLED')
+TOKEN = os.getenv('TOKEN')
 
 ALLOWED_HOSTS = []
 
@@ -155,3 +167,24 @@ AUTH_USER_MODEL = 'user_auth.User'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/users/'
+
+
+# настроики использование кеша
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
+
+# признак использования кэша
+# CACHE_ENABLED=True
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": "redis://127.0.0.1:6379",
+        }
+    }
