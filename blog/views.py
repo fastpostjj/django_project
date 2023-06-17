@@ -22,7 +22,7 @@ class BlogDetailView(generic.DetailView):
     def get(self, request, *args, **kwargs):
         self.object = super().get_object()
         self.object.count_view += 1
-        print("Увеличение счетчика")
+        # print("Увеличение счетчика")
         self.object.save()
         context = self.get_context_data(object=self.object)
         if self.object.count_view == 100:

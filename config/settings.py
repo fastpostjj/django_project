@@ -19,9 +19,6 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -31,13 +28,6 @@ SECRET_KEY = 'django-insecure-iv!#ru54omkp2uz_6p1s5w^*i=g-i08h%eyr4rimfjnma*axkl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Чтение файла с переменными окружения
-dot_env = os.path.join(BASE_DIR, '.env')
-load_dotenv(dotenv_path=dot_env)
-
-# Использование переменных окружения
-CACHE_ENABLED = os.getenv('CACHE_ENABLED')
-TOKEN = os.getenv('TOKEN')
 
 ALLOWED_HOSTS = []
 
@@ -57,6 +47,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # кэширование всего сайта
+    # "django.middleware.cache.UpdateCacheMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -64,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # кэширование всего сайта
+    # "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -93,16 +87,39 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-params = get_database_params('database.ini')
+
+# Чтение файла с переменными окружения
+dot_env = os.path.join(BASE_DIR, '.env')
+load_dotenv(dotenv_path=dot_env)
+
+if os.path.isfile(dot_env):
+    # Использование переменных окружения
+    CACHE_ENABLED = os.getenv('CACHE_ENABLED')
+    user = os.getenv('user')
+    port = os.getenv('port')
+    password = os.getenv('password')
+    host = os.getenv('host')
+    email = os.getenv('email')
+    password_email = os.getenv('password_email')
+else:
+    params = get_database_params('database.ini')
+    user = params['user']
+    port = params['port']
+    password = params['password']
+    host = params['host']
+    email_params = get_email_params('email.ini')
+    email = email_params['email_params']
+    password_email  = email_params['password_email ']
+
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': databasename,
-        'USER': params['user'],
-        'PORT': params['port'],
-        'PASSWORD': params['password'],
-        'HOST': params['host']
+        'USER': user,
+        'PORT': port,
+        'PASSWORD': password,
+        'HOST': host
     }
 }
 
@@ -152,13 +169,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-email_params = get_email_params('email.ini')
 
 # для отправки письма
 EMAIL_HOST = 'smtp.yandex.com'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = email_params['email']
-EMAIL_HOST_PASSWORD = email_params['password']
+EMAIL_HOST_USER = email
+EMAIL_HOST_PASSWORD = password_email
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

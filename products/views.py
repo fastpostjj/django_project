@@ -18,28 +18,29 @@ from products.context_file import current_user
 
 # Create your views here.
 
+def get_category_list():
+    if CACHE_ENABLED:
+        # Проверяем включенность кеша
+        key = f'category_list'  # Создаем ключ для хранения
+        category_list = cache.get(key)  # Пытаемся получить данные
+        if category_list is None:
+            # Если данные не были получены из кеша, то выбираем из БД и записываем в кеш
+            category_list = Category.objects.all()
+            cache.set(key, category_list)
+    else:
+        # Если кеш не был подключен, то просто обращаемся к БД
+        category_list = Category.objects.all()
+    return category_list
 
+
+# Возвращаем результат
+# return products_list
 
 class GetContact(View):
     def get(self, request):
         title = 'Контакты'
         text = 'Посетить нас:'
         return render(request, 'products/contact.html', {'title': title, 'text': text})
-
-def cache_example():
-    if CACHE_ENABLED:
-        # Проверяем включенность кеша
-        key = f'products_list' # Создаем ключ для хранения
-        products_list = cache.get(key) # Пытаемся получить данные
-        if products_list is None:
-            # Если данные не были получены из кеша, то выбираем из БД и записываем в кеш
-            products_list = Products.objects.all()
-            cache.set(key, hivepay_month)
-    else:
-        # Если кеш не был подключен, то просто обращаемся к БД
-        products_list = Products.objects.all()
-    # Возвращаем результат
-    return products_list
 
 # Version
 
@@ -107,8 +108,6 @@ class VersionCreateView(generic.CreateView):
     #     context['products'] = Products.objects.all()
     #     return context
 
-        # https: // evileg.com / ru / post / 455 /
-
 class VersionUpdateView(generic.UpdateView):
     model = Version
     form_class = VersionForm
@@ -144,7 +143,6 @@ class Toggle_Activity_Version(View):
         version.save()
         return redirect(reverse('products:version', args=[version.pk]))
 
-
 class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.DetailView):
     model = Products
     permission_required = ["products.view_products"]
@@ -155,15 +153,13 @@ class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.Det
         contex_data['versions'] = Version.objects.filter(product=self.object, is_active=True)
         return contex_data
 
-
 class ProductsListView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     model = Products
-    permission_required = ["products.view_products"]
     extra_context = {
         'title': 'Наши товары',
         'text': "Интернет-магазин саженцев и семян"
     }
-    permission_required = ["products.view_products"]
+    permission_required = ['products.view_products']
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -216,10 +212,8 @@ class ProductsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Up
         if self.request.user.has_perm('products.set_published_status') and\
             self.request.user.has_perm('products.set_description_status') and\
             self.request.user.has_perm('products.set_category_status'):
-            print("все разрешения есть")
             class_form = ProductsForm
         else:
-            print("не все разрешения есть")
             class_form = ProductsFormCut
         return class_form
 
@@ -280,8 +274,6 @@ def toggle_activity_category(request, pk):
     category.save()
     return redirect(reverse('products:category', args=[category.pk]))
 
-
-
 class CategoryDetailView(generic.DetailView):
     model = Category
     # fields = ('name', 'description')
@@ -317,8 +309,11 @@ class CategoriesListView(generic.ListView):
     }
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        # queryset = queryset.filter(is_active=True)
+        # Вариант 1
+        # queryset = super().get_queryset()
+        #Вариант2
+        super()
+        queryset = get_category_list()
         return queryset
 
 class CategoryDeleteView(generic.DeleteView):
@@ -338,14 +333,26 @@ class GetAbout(View):
 class GetIndex(View):
     def get(self, request):
         number = 5
-        object_list = Products.objects.all().order_by('-id')[:number]
+        if CACHE_ENABLED:
+            # Проверяем включенность кеша
+            key = f'products_list'  # Создаем ключ для хранения
+            products_list = cache.get(key)  # Пытаемся получить данные
+            if products_list is None:
+                # Если данные не были получены из кеша, то выбираем из БД и записываем в кеш
+                products_list = Products.objects.all().order_by('-id')[:number]
+                cache.set(key, products_list)
+        else:
+            # Если кеш не был подключен, то просто обращаемся к БД
+            products_list = Products.objects.all()
+        # Возвращаем результат
+        # return products_list
         title = 'Последние 5 товаров'
         text = 'Последние 5 товаров'
         return render(request, 'products/products_list.html', {
-            'title': title,
-            'text': text,
-            'object_list': object_list,
-        })
+                'title': title,
+                'text': text,
+                'object_list': products_list,
+            })
 
 class GetGallery(View):
     def get(self, request):
@@ -358,10 +365,20 @@ class GetGallery(View):
 
 
 def error(request, title = 'Ошибка', text = 'Ошибка', error_message = 'Вы не являетесь владельцем этого товара'):
-    # title = 'Ошибка'
-    # text = 'Ошибка'
-    # error_message = 'Вы не являетесь владельцем этого товара'
     return render(request, 'products/error.html', {'title': title, 'text': text, 'error_message':error_message})
+
+
+# class GetIndex(View):
+#     def get(self, request):
+#         number = 5
+#         object_list = Products.objects.all().order_by('-id')[:number]
+#         title = 'Последние 5 товаров'
+#         text = 'Последние 5 товаров'
+#         return render(request, 'products/products_list.html', {
+#             'title': title,
+#             'text': text,
+#             'object_list': object_list,
+#         })
 
 # def contact(request):
 #     title = 'Контакты'

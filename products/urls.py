@@ -1,4 +1,6 @@
 from django.urls import path
+from django.views.decorators.cache import cache_page, never_cache
+
 # from products.views import about , index, contact, gallery,
 from products.views import ProductDetailView, ProductsListView, ProductsCreateView, \
      ProductsUpdateView, ProductsDeleteView, ProductsNotPublishedView, toggle_activity_product, GetIndex, GetContact, \
@@ -13,10 +15,10 @@ app_name = 'products'
 urlpatterns = [
     path('index/', GetIndex.as_view(), name='index'),
     path('', GetAbout.as_view(), name='about'),
-    path('gallery/', GetGallery.as_view(), name='gallery'),
+    path('gallery/', cache_page(60)(GetGallery.as_view()), name='gallery'),
     path('contact/', GetContact.as_view(), name='contact'),
 
-    path('products/', ProductsListView.as_view(), name='products'),
+    path('products/', never_cache()(ProductsListView.as_view()), name='products'),
     path('products/not_published', ProductsNotPublishedView.as_view(), name='products_not_published'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product'),
     path('products/create/', ProductsCreateView.as_view(), name='product_create'),
