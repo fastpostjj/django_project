@@ -1,5 +1,6 @@
+from django.core.cache import cache
 from django.forms import inlineformset_factory
-from django.http import request, Http404
+from django.http import request, Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy, reverse
@@ -7,6 +8,7 @@ from django.views import generic, View
 from django import forms
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 
+from config.settings import CACHE_ENABLED
 from products.forms import VersionForm, ProductsForm, CategoryForm, ProductsFormCut
 from products.models import Category, Products, Version
 import random
@@ -16,7 +18,23 @@ from products.context_file import current_user
 
 # Create your views here.
 
+def get_category_list():
+    if CACHE_ENABLED:
+        # Проверяем включенность кеша
+        key = f'category_list'  # Создаем ключ для хранения
+        category_list = cache.get(key)  # Пытаемся получить данные
+        if category_list is None:
+            # Если данные не были получены из кеша, то выбираем из БД и записываем в кеш
+            category_list = Category.objects.all()
+            cache.set(key, category_list)
+    else:
+        # Если кеш не был подключен, то просто обращаемся к БД
+        category_list = Category.objects.all()
+    return category_list
 
+
+# Возвращаем результат
+# return products_list
 
 class GetContact(View):
     def get(self, request):
@@ -72,7 +90,6 @@ class VersionDetailView(generic.DetailView):
         contex_data['product_pk'] = self.object.product.pk
         return contex_data
 
-
 class VersionCreateView(generic.CreateView):
     model = Version
     form_class = VersionForm
@@ -91,7 +108,6 @@ class VersionCreateView(generic.CreateView):
     #     context['products'] = Products.objects.all()
     #     return context
 
-        # https: // evileg.com / ru / post / 455 /
 class VersionUpdateView(generic.UpdateView):
     model = Version
     form_class = VersionForm
@@ -112,7 +128,6 @@ class VersionUpdateView(generic.UpdateView):
         context['products'] = Products.objects.all()
         return context
 
-
 class VersionDeleteView(generic.DeleteView):
     model = Version
     success_url = reverse_lazy('products:versions')
@@ -128,7 +143,6 @@ class Toggle_Activity_Version(View):
         version.save()
         return redirect(reverse('products:version', args=[version.pk]))
 
-
 class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.DetailView):
     model = Products
     permission_required = ["products.view_products"]
@@ -139,15 +153,13 @@ class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.Det
         contex_data['versions'] = Version.objects.filter(product=self.object, is_active=True)
         return contex_data
 
-
 class ProductsListView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     model = Products
-    permission_required = ["products.view_products"]
     extra_context = {
         'title': 'Наши товары',
         'text': "Интернет-магазин саженцев и семян"
     }
-    permission_required = ["products.view_products"]
+    permission_required = ['products.view_products']
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -186,7 +198,7 @@ class ProductsCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Cr
         form.save_m2m()
         return redirect(self.get_success_url())
 class ProductsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
-    # permission_required = ["products.change_products", "set_publ_category_descr_status"]
+
     # permission_required = ["products.change_products", "set_published_status", "set_description_status", "set_category_status"]
     model = Products
     # form_class = ProductsForm
@@ -196,42 +208,7 @@ class ProductsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Up
     success_url = reverse_lazy('products:products')
     permission_required = ["products.change_products"]
 
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.object.user != self.request.user:
-            raise Http404("Вы не являетесь владельцем этого товара")
-
-        return self.object
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     obj = get_object_or_404(Products, pk=self.kwargs['pk'])
-    #     if self.request.user == obj.user:
-    #         return queryset.filter(pk=self.kwargs['pk'])
-    #     else:
-    #         # return render(self.request, 'products/error.html', {'error_message': 'Access denied'})
-    #         # return queryset.none()
-    #         raise Http404("Товар не найден")
-    #
-    # def handle_no_permission(self):
-    #     context = {'text':'Ошибка', 'error_message': 'Вы не являетесь владельцем этого товара'}
-    #     # return render(self.request, 'products/error.html', context)
-    #     # Редиректим на страницу товаров
-    #     # return redirect(reverse_lazy('products:about'))
-    #
-    #     # return render(self.request, 'products/error.html', context)
-    #     return redirect('products:about')
-
     def get_form_class(self, *args, **kwargs):
-        # if self.object.user != self.request.user:
-        #
-        #     product = Products.objects.all()
-        #     print('self.object.user=',self.object.user, ' self.request.user=', self.request.user)
-        #     # print(product.user)
-        #     # return redirect(reverse('products:error'))
-        #     class_form = ProductsFormCut
-
-
         if self.request.user.has_perm('products.set_published_status') and\
             self.request.user.has_perm('products.set_description_status') and\
             self.request.user.has_perm('products.set_category_status'):
@@ -239,6 +216,20 @@ class ProductsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Up
         else:
             class_form = ProductsFormCut
         return class_form
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.user != request.user:
+            return redirect(reverse_lazy('products:error'))
+        return super().get(request, args, kwargs)
+
+    # Вариант 2
+    # def get_object(self, queryset=None):
+    #     self.object = super().get_object(queryset)
+    #     if self.object.user != self.request.user:
+    #         raise Http404("Вы не являетесь владельцем этого товара")
+    #
+    #     return self.object
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -283,8 +274,6 @@ def toggle_activity_category(request, pk):
     category.save()
     return redirect(reverse('products:category', args=[category.pk]))
 
-
-
 class CategoryDetailView(generic.DetailView):
     model = Category
     # fields = ('name', 'description')
@@ -320,8 +309,11 @@ class CategoriesListView(generic.ListView):
     }
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        # queryset = queryset.filter(is_active=True)
+        # Вариант 1
+        # queryset = super().get_queryset()
+        #Вариант2
+        super()
+        queryset = get_category_list()
         return queryset
 
 class CategoryDeleteView(generic.DeleteView):
@@ -341,14 +333,26 @@ class GetAbout(View):
 class GetIndex(View):
     def get(self, request):
         number = 5
-        object_list = Products.objects.all().order_by('-id')[:number]
+        if CACHE_ENABLED:
+            # Проверяем включенность кеша
+            key = f'products_list'  # Создаем ключ для хранения
+            products_list = cache.get(key)  # Пытаемся получить данные
+            if products_list is None:
+                # Если данные не были получены из кеша, то выбираем из БД и записываем в кеш
+                products_list = Products.objects.all().order_by('-id')[:number]
+                cache.set(key, products_list)
+        else:
+            # Если кеш не был подключен, то просто обращаемся к БД
+            products_list = Products.objects.all()
+        # Возвращаем результат
+        # return products_list
         title = 'Последние 5 товаров'
         text = 'Последние 5 товаров'
         return render(request, 'products/products_list.html', {
-            'title': title,
-            'text': text,
-            'object_list': object_list,
-        })
+                'title': title,
+                'text': text,
+                'object_list': products_list,
+            })
 
 class GetGallery(View):
     def get(self, request):
@@ -360,10 +364,21 @@ class GetGallery(View):
                       {'title': title, 'text': text, 'object': random_object, })
 
 
-def error(request):
-    title = 'Ошибка'
-    text = 'Ошибка'
-    return render(request, 'products/error.html', {'title': title, 'text': text})
+def error(request, title = 'Ошибка', text = 'Ошибка', error_message = 'Вы не являетесь владельцем этого товара'):
+    return render(request, 'products/error.html', {'title': title, 'text': text, 'error_message':error_message})
+
+
+# class GetIndex(View):
+#     def get(self, request):
+#         number = 5
+#         object_list = Products.objects.all().order_by('-id')[:number]
+#         title = 'Последние 5 товаров'
+#         text = 'Последние 5 товаров'
+#         return render(request, 'products/products_list.html', {
+#             'title': title,
+#             'text': text,
+#             'object_list': object_list,
+#         })
 
 # def contact(request):
 #     title = 'Контакты'
